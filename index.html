@@ -1,0 +1,768 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Micro Exam Drill</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: one narrow working column; a sticky tab bar; the drill card is the only boxed object. */
+:root{--bg:#ffffff; --surface:#ffffff; --bg3:#f5f4f2; --ink:#09090b; --muted:#62626a; --line:#e7e5e4;--accent:#0b0b0d; --accent-ink:#ffffff; --accent-soft:#f5f4f2; --accent-text:#c2410c;--good:#15803d; --good-soft:#ecfdf3; --bad:#dc2626; --bad-soft:#fef2f2; --warn:#a16207; --warn-soft:#fefce8; --new:#62626a; --new-soft:#f5f4f2;--shadow:0 1px 2px rgba(0,0,0,.04),0 6px 16px -10px rgba(0,0,0,.12); --glow:rgba(255,92,40,.10);--daybreak:linear-gradient(90deg,#ffb020 0%,#ff5c28 26%,#f2367f 52%,#7c4dff 78%,#3355ff 100%); --dot:linear-gradient(135deg,#ffb020,#ff5c28 55%,#f2367f);--display:Geist,Inter,"Helvetica Neue",Arial,system-ui,sans-serif; --body:var(--display); --mono:"Geist Mono",ui-monospace,Menlo,Consolas,monospace;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0a0a; --surface:#111111; --bg3:#1a1a1a; --ink:#ededed; --muted:#a1a1a1; --line:#242424;--accent:#fafafa; --accent-ink:#0a0a0a; --accent-soft:#1c1c1c; --accent-text:#ff8a3d;--good:#4ade80; --good-soft:#0f2a1a; --bad:#fb7185; --bad-soft:#2a1216; --warn:#fbbf24; --warn-soft:#2a2210; --new:#a1a1a1; --new-soft:#1c1c1c;--shadow:none; --glow:rgba(255,92,40,.14); color-scheme:dark;}}
+:root[data-theme="dark"]{--bg:#0a0a0a; --surface:#111111; --bg3:#1a1a1a; --ink:#ededed; --muted:#a1a1a1; --line:#242424;--accent:#fafafa; --accent-ink:#0a0a0a; --accent-soft:#1c1c1c; --accent-text:#ff8a3d;--good:#4ade80; --good-soft:#0f2a1a; --bad:#fb7185; --bad-soft:#2a1216; --warn:#fbbf24; --warn-soft:#2a2210; --new:#a1a1a1; --new-soft:#1c1c1c;--shadow:none; --glow:rgba(255,92,40,.14); color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 64px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+header h1{font:800 clamp(26px,5vw,34px)/1.1 var(--display);letter-spacing:-.01em;margin:0;text-wrap:balance}
+header p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;margin:18px 0 20px;border-bottom:1px solid var(--line);padding-top:6px}
+.tab{appearance:none;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);font:600 15px var(--body);padding:8px 12px;cursor:pointer;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
+.tab:focus-visible,.btn:focus-visible,.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.batchbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin-bottom:12px}
+.pips{display:flex;gap:4px;flex-wrap:wrap}
+.pip{width:22px;height:6px;border-radius:3px;background:var(--line)}
+.pip.cur{background:var(--muted)} .pip.ok{background:var(--good)} .pip.no{background:var(--bad)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px clamp(16px,4vw,28px)}
+.qmeta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:12px}
+.chip{display:inline-block;font:600 12px var(--body);padding:2px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.chip.weak{background:var(--bad-soft);color:var(--bad)} .chip.shaky{background:var(--warn-soft);color:var(--warn)} .chip.solid{background:var(--good-soft);color:var(--good)} .chip.new{background:var(--new-soft);color:var(--new)}
+.src{font:500 12px var(--mono);color:var(--muted)}
+.qtext{font:600 18px/1.5 var(--body);white-space:pre-line;margin:0 0 16px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:11px 14px;font:16px/1.45 var(--body);color:var(--ink);cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt .L{font:700 14px/1.6 var(--mono);color:var(--muted);flex:none;width:18px}
+.opt.sel{background:var(--accent-soft);border-color:var(--accent)} .opt.sel .L{color:var(--accent)}
+.tabs{overflow-x:auto}
+.qgrid{display:flex;flex-wrap:wrap;gap:4px;margin-top:14px}
+.qgrid button{appearance:none;width:30px;height:28px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--muted);font:500 12px var(--mono);cursor:pointer;padding:0}
+.qgrid button.done{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.qgrid button.cur{outline:2px solid var(--ink);outline-offset:1px}
+.qgrid button.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)} .qgrid button.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.opt.right{background:var(--good-soft);border-color:var(--good)} .opt.right .L{color:var(--good)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)} .opt.wrong .L{color:var(--bad)}
+.fb{margin-top:16px;border-left:3px solid var(--good);padding:4px 0 4px 14px}
+.fb.no{border-color:var(--bad)}
+.fb h3{margin:0 0 4px;font:700 16px var(--display)}
+.fb p{margin:0}
+.fb .ref{margin-top:6px;font:500 13px var(--mono);color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;align-items:center}
+.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);font:600 15px var(--body);padding:10px 18px;border-radius:8px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.danger{border-color:var(--bad);background:transparent;color:var(--bad)}
+.hint{font-size:13px;color:var(--muted)}
+.big{font:800 44px/1 var(--display);font-variant-numeric:tabular-nums}
+.sumgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin:14px 0 6px}
+h2{font:700 21px/1.25 var(--display);margin:28px 0 10px;text-wrap:balance}
+h3.mod{font:700 17px var(--display);margin:24px 0 8px}
+ul.plain{margin:6px 0;padding-left:20px} ul.plain li{margin:3px 0}
+.missed{display:grid;gap:10px;margin-top:8px}
+.missed div{border-top:1px solid var(--line);padding-top:10px;min-width:0}
+.missed b{display:block}
+.trow{display:grid;grid-template-columns:minmax(0,1fr) 120px 74px;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+.trow .nm{min-width:0}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.bar i.weak{background:var(--bad)} .bar i.shaky{background:var(--warn)} .bar i.solid{background:var(--good)} .bar i.new{background:var(--line)}
+.tnum{font:500 13px var(--mono);color:var(--muted);text-align:right}
+.guide section{border-top:1px solid var(--line);padding-top:6px}
+.guide h4{font:700 16px var(--display);margin:14px 0 4px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.note{font-size:14px;color:var(--muted);margin:4px 0 0}
+.callout{background:var(--accent-soft);border-radius:8px;padding:12px 14px;margin:12px 0;font-size:14px}
+.sync{font:500 12px var(--mono);color:var(--muted)}
+@media (max-width:520px){.trow{grid-template-columns:minmax(0,1fr) 70px;}.trow .tnum{grid-column:2}.trow .bar{grid-column:1/-1;order:3}}
+.slides{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.slidebtn{appearance:none;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--accent);background:var(--accent-soft);color:var(--ink);font:600 13px var(--body);padding:6px 12px;border-radius:999px;cursor:pointer}
+.slidebtn:hover{background:var(--accent);color:var(--accent-ink)}
+.slidebtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+dialog.sv{border:0;padding:0;background:var(--surface);color:var(--ink);border-radius:12px;width:min(1100px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog.sv::backdrop{background:rgba(5,10,8,.7)}
+.sv-top{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.sv-top b{font:700 16px var(--display);flex:1;min-width:0}
+.sv-img{display:block;width:100%;height:auto;max-height:calc(100dvh - 140px);object-fit:contain;background:#fff}
+.sv-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+.sv .btn{padding:7px 14px;font-size:14px}
+@media (prefers-reduced-motion:no-preference){.card{animation:in .18s ease-out}@keyframes in{from{transform:translateY(4px);opacity:.6}to{transform:none;opacity:1}}}
+.seg{display:flex;gap:6px;margin:0 0 12px;flex-wrap:wrap}
+.segb{font:inherit;font-size:14px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.segb[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.slidebtn.loslide{display:block;width:100%;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:none;cursor:zoom-in;margin:8px 0 14px}
+.slidebtn.loslide img{display:block;width:100%;height:auto}
+.lorev{border-top:1px solid var(--line);padding:12px 0}
+.lorev .obj{margin:0 0 8px}
+.lorev .ans{margin-top:10px}
+.lorev .ans p{margin:0 0 6px}
+.pred .predtop{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;margin:6px 0 10px}
+.pred .predside{max-width:320px}
+.up{color:var(--good)} .down{color:var(--bad)}
+.predsvg{display:block;width:100%;height:auto;margin:6px 0 10px}
+.predsvg .pg{stroke:var(--line);stroke-width:1}
+.predsvg .pt{fill:var(--muted);font:12px var(--body)}
+.predsvg .pb{fill:var(--accent);opacity:.14}
+.predsvg .pl{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linejoin:round}
+.predsvg .pd{fill:var(--accent)}
+.predline{margin:6px 0 0;font-size:15px}
+.lotag{margin:0 0 6px;font-size:13px;line-height:1.4;color:var(--muted)}
+.me{margin:8px 0 0;font-size:14px;color:var(--muted)} .me b{color:var(--ink)}
+.linkbtn{appearance:none;border:0;background:none;color:var(--accent);font:600 14px var(--body);text-decoration:underline;cursor:pointer;padding:2px 4px}
+dialog.nd{border:0;border-radius:12px;padding:22px;width:min(420px,calc(100vw - 32px));background:var(--surface);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog.nd::backdrop{background:rgba(5,10,8,.7)}
+dialog.nd h2{margin:0 0 6px}
+.nd input{width:100%;font:500 17px var(--body);padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);margin:12px 0 14px}
+.nd input:focus{outline:2px solid var(--accent);outline-offset:1px}
+
+/* ---- Superday Room look ---- */
+body{background:radial-gradient(1100px 420px at 50% -160px,var(--glow),transparent 70%) no-repeat,var(--bg);-webkit-font-smoothing:antialiased}
+.wrap{padding-block:14px 64px}
+.top{display:flex;align-items:center;gap:10px;min-height:58px;padding:8px 10px 8px 14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand svg{width:28px;height:28px;flex:none}
+.brand svg rect{fill:var(--ink)} .brand svg path{stroke:var(--bg)}
+.brand b{font:700 16px/1 var(--display);letter-spacing:-.04em;white-space:nowrap}
+.brand b span{font-weight:500;color:var(--muted)}
+.top .sp{flex:1}
+.me{display:flex;align-items:center;gap:6px;margin:0;font-size:13.5px;color:var(--muted);min-width:0}
+.me b{color:var(--ink);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.linkbtn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 13px var(--body);border-radius:999px;padding:6px 12px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.linkbtn:hover{background:var(--bg3)}
+.hero{padding:34px 2px 4px}
+.hero .eyebrow{color:var(--accent-text)}
+.hero h1{font:700 clamp(36px,7vw,54px)/1.02 var(--display);letter-spacing:-.05em;margin:10px 0 0;text-wrap:balance}
+.hero h1 i{display:inline-block;width:.2em;height:.2em;border-radius:50%;background:var(--dot);margin-left:.04em;vertical-align:baseline}
+.hero p{margin:12px 0 0;color:var(--muted);font-size:16px;max-width:52ch}
+.sync{font:500 12px var(--mono);color:var(--muted);display:block;margin-top:6px}
+.tabs{display:inline-flex;width:max-content;max-width:100%;gap:2px;margin:22px 0 22px;padding:4px;border:1px solid var(--line);border-radius:999px;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.04);top:calc(env(safe-area-inset-top,0px) + 8px)}
+.tab{border:0;margin:0;border-radius:999px;padding:8px 16px;font:600 14px var(--body);color:var(--muted);white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+.eyebrow{font:600 11.5px var(--mono);letter-spacing:.1em;color:var(--accent-text)}
+.card{position:relative;overflow:hidden;border-radius:16px;padding:30px clamp(18px,4vw,32px) 26px;box-shadow:var(--shadow)}
+.card::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:var(--daybreak);opacity:.85}
+.card h2{font:700 26px/1.15 var(--display);letter-spacing:-.035em}
+h2{font:700 24px/1.2 var(--display);letter-spacing:-.035em}
+h3.mod{font:700 18px var(--display);letter-spacing:-.025em}
+.qtext{font:600 22px/1.4 var(--display);letter-spacing:-.025em;margin:2px 0 20px}
+.chip{font:600 12px var(--body);padding:3px 10px;border:1px solid var(--line);background:var(--surface);color:var(--muted)}
+.chip.weak{border-color:color-mix(in srgb,var(--bad) 35%,transparent)} .chip.shaky{border-color:color-mix(in srgb,var(--warn) 35%,transparent)} .chip.solid{border-color:color-mix(in srgb,var(--good) 35%,transparent)}
+.opts{gap:10px}
+.opt{align-items:center;gap:14px;background:var(--surface);border-radius:12px;padding:13px 16px;box-shadow:0 1px 2px rgba(0,0,0,.03);transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt .L{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--bg3);border:1px solid var(--line);font:600 12px var(--mono);color:var(--muted)}
+.opt.sel{background:var(--bg3);border-color:var(--ink)} .opt.sel .L{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.opt.right .L{background:var(--good);color:#fff;border-color:var(--good)} .opt.wrong .L{background:var(--bad);color:#fff;border-color:var(--bad)}
+.fb{border-left:0;padding:16px 18px;border-radius:12px;background:var(--good-soft);margin-top:18px}
+.fb.no{background:var(--bad-soft)}
+.fb h3{font:700 17px var(--display);letter-spacing:-.02em;color:var(--good)} .fb.no h3{color:var(--bad)}
+.btn{border-radius:999px;padding:11px 20px;font:600 15px var(--body);display:inline-flex;align-items:center;gap:10px;transition:background .15s,box-shadow .15s}
+.btn:not(.ghost):not(.danger){background:#0b0b0d;border-color:#0b0b0d;color:#fff}
+.btn:not(.ghost):not(.danger):hover{background:#26262b;box-shadow:0 10px 24px -12px rgba(255,92,40,.7)}
+.btn:not(.ghost):not(.danger)::after{content:"→";display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--dot);color:#fff;font-size:13px;line-height:1}
+:root[data-theme="dark"] .btn:not(.ghost):not(.danger){background:#fafafa;border-color:#fafafa;color:#0a0a0a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn:not(.ghost):not(.danger){background:#fafafa;border-color:#fafafa;color:#0a0a0a}}
+.btn.ghost{background:var(--surface);border-color:var(--line);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.btn.ghost:hover{background:var(--bg3)}
+.btn:disabled{opacity:.45;cursor:default}
+.pip{height:4px;border-radius:2px}
+.pip.cur{background:var(--daybreak)}
+.bar{height:6px;border-radius:3px}
+.qgrid button{border-radius:8px;width:32px;height:30px}
+.qgrid button.done{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.callout{background:var(--bg3);border:1px solid var(--line);border-radius:12px}
+.slidebtn{background:var(--surface);border:1px solid var(--line);color:var(--ink);font:600 12.5px var(--mono);padding:7px 13px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.slidebtn:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+dialog.sv,dialog.nd{border-radius:18px;box-shadow:0 30px 60px -12px rgba(0,0,0,.25),0 18px 36px -18px rgba(0,0,0,.3)}
+dialog.sv::backdrop,dialog.nd::backdrop{background:rgba(10,10,10,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+dialog.nd{padding:30px 26px 24px;text-align:center;overflow:hidden}
+dialog.nd::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--daybreak)}
+dialog.nd .mark{width:44px;height:44px;margin:0 auto 14px;display:block}
+dialog.nd .mark rect{fill:var(--ink)} dialog.nd .mark path{stroke:var(--bg)}
+dialog.nd h2{font:700 24px/1.15 var(--display);letter-spacing:-.035em}
+.nd input{border-radius:12px;text-align:center;background:var(--surface);padding:13px 14px}
+.nd .btn{justify-content:center}
+footer.foot{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+@media (max-width:520px){.me>span{display:none}.brand b span{display:none}.hero{padding-top:26px}.qtext{font-size:19px}.tab{padding:7px 10px;font-size:13px}.tabs{scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}}
+</style></head><body>
+
+<div class="wrap">
+<header class="top"><div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7.5"/><path d="M9.5 23.5V9.5l6.5 8 6.5-8v14" fill="none" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="dga" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb020"/><stop offset=".55" stop-color="#ff5c28"/><stop offset="1" stop-color="#f2367f"/></linearGradient></defs><circle cx="24.6" cy="9.2" r="1.85" fill="url(#dga)"/></svg><b>Micro <span>Exam Room</span></b></div><div class="sp"></div><p class="me"><span>Studying as</span> <b id="who"></b> <button class="linkbtn" id="switch">Switch</button></p></header>
+<div class="hero"><span class="eyebrow">Microeconomics · Homeworks 7 to 10</span><h1>Study for the micro exam<i aria-hidden="true"></i></h1><p>Batches of 10 that lean harder on whatever you miss. <span class="sync" id="sync"></span></p></div>
+<nav class="tabs" role="tablist">
+  <button class="tab" role="tab" id="tab-drill" aria-selected="true" data-v="drill">Drill</button>
+  <button class="tab" role="tab" id="tab-exam" aria-selected="false" data-v="exam">Practice exam</button>
+  
+  <button class="tab" role="tab" id="tab-progress" aria-selected="false" data-v="progress">Progress</button>
+  <button class="tab" role="tab" id="tab-guide" aria-selected="false" data-v="guide">Study guide</button>
+</nav>
+<main id="view"></main>
+<footer class="foot"><span>Built from Isabelle’s Homeworks 7 to 10</span><span>Not an official course site</span></footer>
+</div>
+<dialog class="nd" id="nd" aria-labelledby="nd-t">
+  <form id="nd-form"><svg viewBox="0 0 32 32" aria-hidden="true" class="mark"><rect width="32" height="32" rx="7.5"/><path d="M9.5 23.5V9.5l6.5 8 6.5-8v14" fill="none" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="dgb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb020"/><stop offset=".55" stop-color="#ff5c28"/><stop offset="1" stop-color="#f2367f"/></linearGradient></defs><circle cx="24.6" cy="9.2" r="1.85" fill="url(#dgb)"/></svg><h2 id="nd-t">What's your name?</h2>
+  <p class="hint">Type the same name every time you come back and your progress picks up where you left off, on any device.</p>
+  <input id="nd-in" autocomplete="nickname" maxlength="40" placeholder="Your name" aria-label="Your name">
+  <button class="btn" type="submit" style="width:100%">Start studying</button></form>
+</dialog>
+<dialog class="sv" id="sv" aria-labelledby="sv-t">
+  <div class="sv-top"><b id="sv-t"></b><a class="btn ghost" id="sv-open" target="_blank" rel="noopener">Full size</a><button class="btn ghost" id="sv-x">Close</button></div>
+  <img class="sv-img" id="sv-img" alt="">
+  <div class="sv-nav"><button class="btn ghost" id="sv-prev">← Prev slide</button><span class="hint">Arrow keys move, Esc closes</span><button class="btn ghost" id="sv-next">Next slide →</button></div>
+</dialog>
+
+<script>
+"use strict";
+const MODS={"7": "HW 7 · Production & Costs", "8a": "HW 8a · Perfect Competition: Maximizing Profit", "8b": "HW 8b · Perfect Competition: The Long Run", "9": "HW 9 · Monopoly", "10": "HW 10 · Monopolistic Competition & Oligopoly"};
+const MLIST=["7", "8a", "8b", "9", "10"];
+const TOPICS={
+"pr-product":{m:"7",n:"Marginal product & diminishing returns",g:["Total product = output (q). Marginal product of labor MP = Δq ÷ ΔL (the extra output from one more worker). Average product AP = q ÷ L (not very important).", "Law of diminishing returns: adding more of one input to a fixed input eventually makes marginal product fall.", "MP and MC move in opposite directions: MP rising → producing is getting easier → MC falls. MP falling → getting harder → MC rises."]},
+"pr-costs":{m:"7",n:"Cost curves: TC, FC, VC, MC, AVC, AFC, ATC",g:["TC = FC + VC. VC = L × wage when labor is the variable input.", "MC = ΔTC ÷ Δq. AVC = VC ÷ q. AFC = FC ÷ q. ATC = TC ÷ q = AVC + AFC.", "Fixed costs are paid even if production stops (factory, warehouse, special-order machinery). Variable costs change with output (labor hours, blank shirts, dye, electricity).", "MC passes through the minimum of AVC and of ATC. AFC keeps falling as q rises, so AVC and ATC get closer together.", "From a graph: TC = ATC × q (e.g. ATC ≈ $16 at q = 3 → TC ≈ $48).", "A higher price for a variable input (flour for doughnuts) shifts MC, AVC and ATC up, but not AFC."]},
+"pr-profit":{m:"7",n:"Explicit vs implicit costs, economic profit",g:["Explicit costs = actual payments (wages, rent, insurance). Implicit costs = opportunity costs (profit from the next-best use, forgone interest or rent).", "Economic cost = explicit + implicit. Economic profit = TR − explicit − implicit = TR − economic cost.", "Accounting profit ignores implicit costs, so it is usually BIGGER than economic profit.", "Example: accounting profit $50,000 but the next-best option earns $80,000 → economic profit = −$30,000.", "Example: explicit cost $2.3M + next-best profit $1.2M → economic cost $3.5M."]},
+"pr-longrun":{m:"7",n:"Long run: LRATC, economies of scale & sunk costs",g:["Long run: every input is variable. LRATC shows the lowest cost per unit at each scale.", "Economies of scale: LRATC falls as output grows (doubling output less than doubles cost). Constant returns: LRATC flat.", "Diseconomies of scale: LRATC rises (doubling output MORE than doubles long-run total cost).", "Sunk costs are already spent and can't be recovered, so they shouldn't affect decisions about the future. Only compare future costs and benefits."]},
+"pc-model":{m:"8a",n:"Price takers: what perfect competition is",g:["Perfect competition (price takers): many small firms, an identical (homogeneous) product, low entry barriers, good information.", "Each firm is too small to move the market price, so it takes the price set by market supply and demand.", "The firm's demand curve is a horizontal (perfectly elastic) line at the market price: P = MR = D.", "Examples from the homework: Grade A eggs, gas stations selling identical gas at the same price. NOT cars, smartphones, fast food or the power company."]},
+"pc-maxprofit":{m:"8a",n:"Produce where P = MR = MC",g:["Rule: keep producing every unit where price (= MR) is greater than marginal cost. Stop where MC rises to equal P.", "If MC < P (e.g. MC $2, P $2.50), increase output. If MC > P, cut output.", "Do NOT produce where MC crosses ATC: that is only the break-even point, not the profit-maximizing rule.", "Falling marginal product means rising marginal cost, which is why MC eventually crosses P."]},
+"pc-profitcalc":{m:"8a",n:"Reading profit off a graph or table",g:["Profit = (P − ATC) × Q. Use ATC (not AVC) at the quantity where MC = MR.", "Example HW 8a Q10: (7 − 9) × 10,000 = −$20,000.", "If P equals minimum ATC, profit is exactly zero (the break-even point).", "From a table: TC = ATC × Q (or FC + VC); MC = change in TC; profit = TR − TC. Pick the Q with the biggest profit.", "Zero economic profit = a normal return. The firm does as well as typical firms elsewhere, and accounting profit is still positive."]},
+"pc-shutdown":{m:"8a",n:"Shutdown rule: P below AVC",g:["Short run: keep producing as long as P ≥ minimum AVC, even with a loss, because revenue still covers some fixed cost.", "If P < minimum AVC, shut down: producing would lose more than just the fixed cost.", "Shutdown point = minimum AVC. Break-even point = minimum ATC.", "The firm's short-run supply curve is its MC curve above minimum AVC."]},
+"lr-entryexit":{m:"8b",n:"Entry, exit & zero economic profit",g:["Positive economic profit + low barriers → firms enter, supply shifts right, price falls until profit is zero.", "Losses → firms exit, supply shifts left, price rises until profit is zero. Zero profit → no entry or exit.", "Long-run equilibrium: P = MC = minimum ATC, zero economic profit (each firm earns just enough to stay in business).", "Losses signal that firms made goods worth less than the resources used to make them.", "Starting from long-run equilibrium, a fall in demand causes short-run economic losses."]},
+"lr-costind":{m:"8b",n:"Constant, increasing & decreasing cost industries",g:["Constant cost: input prices don't change as the industry grows → long-run supply is horizontal (perfectly elastic). Price returns to the original level.", "Increasing cost: entry pushes input costs up (and exit pushes them down) → long-run supply slopes up. The new price ends up between the old price and the short-run spike.", "Decreasing cost: entry lowers costs → long-run supply slopes down. After a demand increase, the new price ends up BELOW the original P0.", "Long-run supply is more elastic than short-run supply."]},
+"lr-supply":{m:"8b",n:"Demand shifts: short run vs long run",g:["Demand rises: short run price jumps (A → B). Firms profit, new firms enter, supply shifts right (B → C).", "Demand falls in an increasing-cost industry (potatoes example): short-run price drops to $4, then rises a bit in the long run (to about $5) but stays below the original $6.", "Constant-cost: the long-run price ends where it started, but with more (or fewer) firms and a larger (or smaller) quantity.", "Perfect competition is efficient: P = MC (allocative: every unit worth more than it costs gets made) and output at minimum ATC (productive: lowest possible cost)."]},
+"mo-barriers":{m:"9",n:"Monopoly, barriers & natural monopoly",g:["Monopoly: one seller, no close substitutes, high barriers to entry.", "Why monopolies happen: legal barriers (copyright, patent, occupational licensing), control of a key resource, network effects (a product gets more valuable as more people use it), natural monopoly.", "Natural monopoly: long-run ATC keeps falling as the firm grows, so one big firm can supply the market most cheaply (electric utilities).", "Because entry is blocked, a monopolist can keep economic profit in the long run."]},
+"mo-mr":{m:"9",n:"Demand, total revenue & marginal revenue",g:["A monopolist faces the downward-sloping market demand curve, so to sell one more unit it must cut the price on ALL units → MR < P.", "TR = P × Q. MR = change in TR ÷ change in Q. In HW 9 Q2 the quantity rises 5 at a time, so divide by 5.", "Local Power Corp: TR 70, 90, 100, 100, 90, 70. MR 4, 2, 0, −2, −4.", "TR is at its maximum where MR = 0. Where MR is negative, demand is inelastic, and a monopolist never produces there.", "Table 11-1: TR = 30, 50, 60, 60, 50 → MR of the 2nd unit = 50 − 30 = $20."]},
+"mo-maxprofit":{m:"9",n:"Monopoly profit max & deadweight loss",g:["Pick Q where MR = MC, then go UP to the demand curve for the price.", "Profit = (P − ATC) × Q. Table 11-1: profits 27, 43, 48, 42, 25 → 3 units is best.", "If MC > MR: reduce output and raise price.", "The efficient output is where MC crosses DEMAND (P = MC). Monopoly makes less and charges more, which creates a deadweight (welfare) loss.", "Monopoly is inefficient in a STATIC sense (deadweight loss today), but can be efficient in a DYNAMIC sense: the chance of monopoly profit (patents) rewards innovation."]},
+"mo-regulation":{m:"9",n:"Regulating natural monopolies",g:["Marginal cost pricing (P = MC): efficient output, but for a natural monopoly P < ATC, so the firm loses money and would go out of business without a subsidy.", "Average total cost pricing (normal-profit regulation): P = ATC. Output rises vs. unregulated, economic profit is eliminated, but some welfare loss remains.", "Downside of ATC pricing: weak incentive to keep costs down, since costs are passed on (firms may pad costs).", "Antitrust law: break up monopolies, block mergers and ban collusion to keep markets competitive. Each approach (MC pricing, ATC pricing, antitrust) has advantages and disadvantages."]},
+"mo-pricedisc":{m:"9",n:"Price discrimination",g:["Charging different customers different prices because of different elasticities of demand, which increases profit.", "Charge the HIGHER price to the group with the more INELASTIC demand (less sensitive to price).", "Requirements: some market power, groups that can be separated, and no reselling between groups.", "It is not always more profitable than a single price; it only works when those conditions hold.", "Examples: student and senior discounts, airline fares, movie matinees.", "First degree: charge each buyer their maximum willingness to pay (the 'amazing telepathic monopolist'). It takes all the consumer surplus, and output reaches the efficient level.", "Second degree: volume-based pricing (bulk discounts, second item half off).", "Third degree: different prices by consumer characteristics (students, seniors, location)."]},
+"mc-traits":{m:"10",n:"Monopolistic competition: features & examples",g:["Many firms, differentiated products, low entry barriers, each firm faces a downward-sloping demand curve.", "High entry barriers are NOT a feature (that's monopoly or oligopoly).", "Best example: restaurants. Also clothing brands, hair salons, coffee shops.", "Firms differentiate through quality, location, style, service and advertising."]},
+"mc-shortlong":{m:"10",n:"Short run vs long run, entry & exit",g:["Profit-max price: find Q where MC = MR, then go up to demand (P5 in Figure 11-1, NOT P1 where MC = MR).", "Short run: P can be above ATC (profit) or below (loss). Long run: entry/exit pushes P = ATC (zero economic profit).", "Profits → new firms enter → each existing firm's demand DECREASES until zero profit.", "Firms exit → remaining firms' profits RISE and product diversity DECREASES."]},
+"mc-vs-pc":{m:"10",n:"Comparing market structures",g:["Long run: both perfect competition and monopolistic competition have P = ATC, but only the price taker produces at MINIMUM ATC.", "Monopolistic competition firms have excess capacity and P > MC.", "Demand elasticity: monopoly (least elastic) < monopolistic competition < perfect competition (perfectly elastic).", "All firms maximize profit where MR = MC.", "Efficiency of monopolistic competition is UNCLEAR: P > MC and excess capacity are inefficient, but consumers get product variety they value."]},
+"ol-oligopoly":{m:"10",n:"Oligopoly, cartels & cheating",g:["Oligopoly: a small number of sellers make up the whole industry. Firms are interdependent and watch rivals' reactions.", "Cartel: firms agree to restrict output and raise price to maximize joint profit (e.g. OPEC).", "Members have an incentive to cheat because each firm's own demand curve is MORE elastic than the market demand curve: cutting price a little steals lots of sales.", "Collusion is harder with more firms, low entry barriers, differentiated products, and when cheating is hard to detect."]},
+"ol-game":{m:"10",n:"The two temptations: collude or compete",g:["Oligopolists face two temptations: COLLUDE (act together like a monopoly for the highest joint profit) or COMPETE (cheat on the deal to grab market share).", "Prisoner's dilemma: each firm's best move on its own (cheat or charge low) leaves both worse off than if they cooperated.", "Dominant strategy: the best choice no matter what the rival does.", "Nash equilibrium: neither firm can do better by changing its choice alone."]}
+};
+const LOS={}, LOREV=[];
+const L=["A","B","C","D","E","F","G"];
+const Q=[
+["h7_1", "pr-profit", "HW 7 Q1", "What is the difference between accounting profit and economic profit?", ["Accounting profit makes no allowance for implicit costs; economic profit takes them into account.", "They differ only if the accountant makes a mistake.", "They are the same thing.", "Accounting profit is usually smaller than economic profit."], 0, "Economic profit subtracts implicit (opportunity) costs too, so accounting profit is usually the BIGGER number.", "HW 7 Q1"],
+["h7_2", "pr-costs", "HW 7 Q2", "Figure 7-5: ATC is U-shaped with a minimum at (4, $15). AVC is U-shaped, below ATC, with a minimum at (3, $10). MC passes through the minimums of AVC and ATC.\n\nWhat is the firm's approximate total cost when it produces 3 units?", ["16", "10", "60", "48"], 3, "At q = 3, ATC is a bit above its $15 minimum, about $16. TC = ATC × q ≈ 16 × 3 = $48. ($10 is AVC there, and 16 is ATC, not TC.)", "HW 7 Q2"],
+["h7_3", "pr-profit", "HW 7 Q3", "Your t-shirt business has explicit costs (labor, capital, rent, etc.) of $2.3 million a year. Your next-best opportunity, making socks and underwear with the same facilities, would earn $1.2 million in profit. What are your economic costs?", ["$4.6 million", "$1.3 million", "$3.5 million", "$1.2 million"], 2, "Economic cost = explicit + implicit = $2.3M + $1.2M (the profit you give up) = $3.5M.", "HW 7 Q3"],
+["h7_4", "pr-product", "HW 7 Q4", "Which describes the relationship between marginal product and marginal cost?", ["MP falling → easier to produce → MC falls. MP rising → harder → MC rises.", "MP rising → easier → MC rises. MP falling → harder → MC falls.", "MP rising → easier to produce → MC falls. MP falling → harder to produce → MC rises.", "None of the above."], 2, "They are mirror images: when each worker adds more output, each unit costs less, and vice versa.", "HW 7 Q4"],
+["h7_5a", "pr-costs", "HW 7 Q5", "For an FSU t-shirt printing business (time horizon: a week to a month), which input is FIXED?", ["A warehouse", "Labor hours", "Plain white t-shirts delivered daily", "Garnet and gold dyes"], 0, "Fixed: the warehouse, the factory, large machinery special-ordered years ahead. Variable: labor hours, blank shirts, dyes, electricity.", "HW 7 Q5"],
+["h7_5b", "pr-costs", "HW 7 Q5", "For an FSU t-shirt printing business (time horizon: a week to a month), which input is VARIABLE?", ["Electricity", "A factory", "Large machinery that must be special-ordered years in advance", "A warehouse"], 0, "Electricity use rises and falls with how much you print. The buildings and special-order machines can't change within a month.", "HW 7 Q5"],
+["h7_6", "pr-costs", "HW 7 Q6", "Costs that a firm still pays if it stays in business but halts current production are called", ["variable costs.", "fixed costs.", "implicit costs.", "explicit costs."], 1, "Fixed costs (rent, insurance, loan payments) don't depend on output.", "HW 7 Q6"],
+["h7_7", "pr-profit", "HW 7 Q7", "Which is an example of an EXPLICIT cost?", ["Profits you'd earn producing the next-best product", "Income you could earn renting out the factory", "Interest you could earn by selling assets and banking the cash", "A payment to an insurance company to insure the factory"], 3, "Explicit = money actually paid out. The other three are opportunity (implicit) costs.", "HW 7 Q7"],
+["h7_8", "pr-profit", "HW 7 Q8", "Economic profit is", ["Total revenue − economic cost", "Total revenue − (explicit cost + implicit cost)", "Total revenue − explicit cost − implicit cost", "All of the above"], 3, "All three say the same thing, since economic cost = explicit + implicit.", "HW 7 Q8"],
+["h7_9", "pr-costs", "HW 7 Q9", "A doughnut shop makes about 600 dozen doughnuts a day. If flour prices rise 20 percent,", ["MC, ATC and AFC shift up.", "MC, AVC and ATC shift up.", "only MC and ATC shift up.", "only MC shifts up."], 1, "Flour is a variable input, so variable cost rises: MC and AVC go up, and ATC (= AVC + AFC) goes up with them. Fixed cost is unchanged, so AFC doesn't move.", "HW 7 Q9"],
+["h7_10", "pr-profit", "HW 7 Q10", "Economic costs are", ["profit minus explicit costs.", "explicit costs plus implicit costs.", "explicit costs plus sunk costs.", "explicit costs plus profits."], 1, "Economic cost counts both money paid out and opportunities given up.", "HW 7 Q10"],
+["h7_11", "pr-profit", "HW 7 Q11", "Your FSU bandana business earns $50,000 a year in accounting profit. Switching to FSU t-shirts would earn $80,000 a year. Your economic profit is", ["$80,000", "$50,000", "$30,000", "−$30,000"], 3, "Economic profit = 50,000 − 80,000 (the opportunity cost of not making t-shirts) = −$30,000. You'd be better off switching.", "HW 7 Q11"],
+["h7_12", "pr-longrun", "HW 7 Q12", "Which reflects diseconomies of scale?", ["Long-run marginal cost increases as output increases.", "Marginal product decreases as output increases.", "When output doubles, long-run total cost more than doubles.", "Short-run average cost increases as output increases."], 2, "If cost more than doubles when output doubles, cost per unit (LRATC) is rising: diseconomies of scale. Falling MP is diminishing returns, a SHORT-run idea.", "HW 7 Q12"],
+["h8a1", "pc-profitcalc", "HW 8a Q1", "Figure 8-6: ATC is U-shaped with a minimum at (125, $30). AVC is U-shaped, below ATC, with a minimum at (100, $20). MC passes through both minimums.\n\nIf the market price is $30, what are the firm's profit-maximizing output and maximum profit?", ["Output 150; profit $1,500", "Output 150; profit between $1,250 and $1,500", "Output 125; profit between $1,000 and $1,250", "Output 125; profit zero"], 3, "At P = $30, MR = $30 crosses MC at 125 units, which is exactly minimum ATC ($30). P = ATC, so profit = (30 − 30) × 125 = 0. This is the break-even point.", "HW 8a Q1"],
+["h8a2", "pc-maxprofit", "HW 8a Q2", "Your business makes bags of potato chips in a perfectly competitive industry. Marginal product is falling. Marginal cost is $2. The price is $2.50. What should you do to maximize profit?", ["Raise the price.", "Decrease production.", "Leave production unchanged.", "Increase production."], 3, "P ($2.50) > MC ($2), so the next bag adds $0.50 to profit. Keep expanding until MC rises to $2.50. A price taker can't raise its price.", "HW 8a Q2"],
+["h8a3", "pc-model", "HW 8a Q3", "A firm that is a price taker can…", ["decide what price to charge for its product.", "substantially change the market price by changing its production.", "sell some of its output at a price higher than the market price.", "sell all of its output at the market price."], 3, "A price taker is tiny relative to the market. It can sell as much as it wants at the market price, but nothing above it.", "HW 8a Q3"],
+["h8a4", "pc-model", "HW 8a Q4", "Which product most closely fits the competitive price-taker model (perfect competition)?", ["Automobiles: substantial economies of scale", "Beer: many consumers buying different products", "Grade A eggs: many producers of a homogeneous product", "Smartphones: a few manufacturers with a variety of products"], 2, "Perfect competition needs many sellers and an identical product. Eggs fit; cars and phones have few firms, and beer is differentiated.", "HW 8a Q4"],
+["h8a5", "pc-profitcalc", "HW 8a Q5", "Figure 8-2: a perfectly competitive firm where the MR = D = P line passes through the minimum point of ATC. If market demand shifts to the right, what happens?", ["Profits become negative.", "Profits become zero.", "Profits become positive.", "All of the above."], 2, "The firm starts at zero profit (P = min ATC). More demand raises the market price above ATC, so short-run profit turns positive.", "HW 8a Q5"],
+["h8a6", "pc-shutdown", "HW 8a Q6", "What does a profit-maximizing price taker do when price falls below the minimum of average variable cost?", ["Keep producing in the short run but likely exit in the long run.", "Stop production as soon as it can pay its sunk costs.", "Keep producing to try to pay fixed costs.", "Stop production to minimize its losses."], 3, "Below min AVC, revenue doesn't even cover variable cost, so every unit makes the loss bigger. Shutting down limits the loss to fixed cost.", "HW 8a Q6"],
+["h8a7", "pc-model", "HW 8a Q7", "Which is an example of an industry with price takers (pure or perfect competition)?", ["Fast food restaurants selling a variety of food", "Brands selling clothing in different cuts and styles", "All the gas stations in an area selling exactly the same gasoline at the same price", "Your local power company, the only seller of electricity"], 2, "Identical product, same price, many sellers = price takers. Fast food and clothing are differentiated (monopolistic competition); the power company is a monopoly.", "HW 8a Q7"],
+["h8a8", "pc-model", "HW 8a Q8", "A firm in a price-taker (perfectly competitive) market…", ["must take the price that is determined in the market.", "must be large relative to the total market.", "can exert a major influence on the market price.", "must reduce its price if it wants to sell more."], 0, "The market sets the price; the firm is small and can sell any amount at that price.", "HW 8a Q8"],
+["h8a9", "pc-profitcalc", "HW 8a Q9", "If a firm is making zero economic profit, it…", ["will also generally be making zero accounting profit.", "is doing as well as typical firms in other markets.", "will not survive in the long run.", "will be forced to shut down and leave the market."], 1, "Economic profit subtracts opportunity cost too. Zero economic profit means a normal return, as good as the next-best use of the resources. Accounting profit is still positive.", "HW 8a Q9"],
+["h8a10", "pc-profitcalc", "HW 8a Q10", "Figure 8-3: a competitive firm produces 10,000 units where MC = MR. AVC is $6, ATC is $9, and the market price is $7. What is the firm's economic profit?", ["$11,900,000", "−$30,000", "$60,000", "−$20,000", "$90,000"], 3, "Profit = (P − ATC) × Q = (7 − 9) × 10,000 = −$20,000. Use ATC, not AVC. It still produces because P ($7) > AVC ($6).", "HW 8a Q10"],
+["h8a11", "pc-maxprofit", "HW 8a Q11", "Which are true for a perfectly competitive firm?\nI. Price and marginal revenue are the same.\nII. The firm should produce where marginal cost intersects average total cost.\nIII. To maximize profit, the firm produces every unit for which price is greater than marginal cost.", ["I and III", "I, II, and III", "I and II", "II and III"], 0, "I is true (P = MR for a price taker). III is the profit rule. II is false: MC = ATC is the break-even point, not the profit-max point.", "HW 8a Q11"],
+["h8a12", "pc-profitcalc", "HW 8a Q12", "A price-taker firm's average total cost:\nQ: 1, 2, 3, 4, 5\nATC: $10, $8, $7, $8, $10\n\nFixed cost is $3 and the market price is $10. How many units should the firm produce to maximize profit?", ["1", "2", "3", "4", "5"], 2, "TC = ATC × Q = 10, 16, 21, 32, 50. MC = 10, 6, 5, 11, 18. Profit = 10Q − TC = 0, 4, 9, 8, 0. Best is 3 units: the 4th unit's MC ($11) is above the $10 price. (Isabelle missed this one on the homework.)", "HW 8a Q12"],
+["h8b1", "lr-entryexit", "HW 8b Q1", "There are 1,000 identical firms in a perfectly competitive industry. In the short run, each firm's total revenue exceeds total cost. What happens in the long run?", ["Many firms enter and each firm eventually operates at a loss.", "Nothing, because each firm is already maximizing profit.", "Firms enter, but price stays the same because existing firms won't allow it to fall.", "Firms enter, and price is driven down until each firm makes just enough to stay in business."], 3, "Profit attracts entry, supply rises, and price falls until economic profit is zero (a normal return, enough to stay in business).", "HW 8b Q1"],
+["h8b2", "lr-entryexit", "HW 8b Q2", "In a price-taker market, economic losses indicate that…", ["some firms are using unfair tactics to harm others.", "some firms produced goods that are less valuable than the resources used to make them.", "the situation is normal and no adjustments are needed.", "firms aren't minimizing cost and should expand to get economies of scale."], 1, "A loss means consumers value the output less than the resources cost. That signals resources should move elsewhere, so firms exit.", "HW 8b Q2"],
+["h8b3", "lr-entryexit", "HW 8b Q3", "A competitive price taker is in long-run equilibrium when market demand suddenly falls. The short-run result will be…", ["economic losses.", "lower average total cost.", "greater economic profit.", "a normal profit.", "lower average variable cost."], 0, "It started at zero profit (P = min ATC). Lower demand drops the price below ATC, so firms take short-run losses until some exit.", "HW 8b Q3"],
+["h8b4", "lr-costind", "HW 8b Q4", "In a constant cost industry,", ["total cost is the same no matter how much a firm produces.", "a natural monopoly is likely.", "entry of new firms lowers input costs.", "the long-run supply curve is perfectly elastic."], 3, "Costs don't change as firms enter or exit, so price always returns to the same level: a flat (perfectly elastic) long-run supply curve.", "HW 8b Q4"],
+["h8b5", "lr-costind", "HW 8b Q5", "Figure 9-2: a perfectly competitive DECREASING-cost market has just had an increase in demand, raising the firm's price from P0 to P1. What happens next?", ["Supply has shifted right and costs stayed the same; the new price is back at P0.", "Supply has shifted right and costs rose; the new price is above P0 but below P1.", "Supply has shifted right and costs fell; the new price is below both P0 and P1."], 2, "Decreasing cost: as firms enter, input costs FALL. Supply shifts right and the new long-run price ends up below the original P0.", "HW 8b Q5"],
+["h8b6", "lr-supply", "HW 8b Q6", "Figure 9-1: S0 and D0 meet at A. Demand shifts to D1, meeting S0 at B. Supply then shifts to S1, meeting D1 at C. The long-run supply curve (LRS) slopes up through A and C. The move from A to B to C is best explained by…", ["an increase in demand, then entry and more supply, in an increasing cost industry.", "a decrease in demand, then exit and less supply, in an increasing cost industry.", "an increase in demand, then exit and less supply, in a constant cost industry.", "a decrease in demand, then entry and more supply, in a constant cost industry."], 0, "A→B is demand rising (D0 to D1). B→C is new firms entering (S shifts right). An upward-sloping LRS means increasing cost.", "HW 8b Q6"],
+["h8b7", "lr-costind", "HW 8b Q7", "If a competitive market is an increasing cost industry, which is correct?", ["If firms enter, costs rise. If firms exit, costs fall.", "If firms enter, costs fall. If firms exit, costs rise.", "If firms enter, costs rise. If firms exit, costs rise.", "None of the above"], 0, "More firms bid up input prices; fewer firms let input prices fall. That's why its long-run supply slopes up.", "HW 8b Q7"],
+["h8b8", "lr-entryexit", "HW 8b Q8", "If economic profits are positive and entry barriers are low, firms will…", ["enter the market.", "neither enter nor exit.", "exit the market."], 0, "Profit above a normal return attracts new firms.", "HW 8b Q8"],
+["h8b9", "lr-entryexit", "HW 8b Q9", "If economic profits are zero and entry barriers are low, firms will…", ["neither enter nor exit the market.", "exit the market.", "enter the market."], 0, "Zero economic profit is a normal return, so there's no reason to move in or out. This is long-run equilibrium.", "HW 8b Q9"],
+["h8b10", "lr-entryexit", "HW 8b Q10", "If economic profits are negative and entry barriers are low, firms will…", ["enter the market.", "neither enter nor exit.", "exit the market."], 2, "Losses push firms out until price rises enough for profit to be zero again.", "HW 8b Q10"],
+["h8b11", "lr-costind", "HW 8b Q11", "Compared with the short-run supply curve, the long-run supply curve is usually…", ["of unitary elasticity.", "more inelastic.", "more elastic.", "vertical."], 2, "In the long run firms can enter, exit and change plant size, so quantity responds more to price.", "HW 8b Q11"],
+["h8b12", "lr-supply", "HW 8b Q12", "Russet potatoes: a perfectly competitive increasing-cost industry in equilibrium at $6 per sack. Low-carb diets cut demand. What happens to price in the short run and the long run?", ["SR falls below $6 (say $4); LR rises back to $6.", "SR falls below $6; LR rises above $6.", "SR falls to about $4; LR falls even lower, to about $3.", "SR falls to about $4; LR rises a bit, to about $5."], 3, "Price drops, firms lose money and exit. In an increasing-cost industry, exit LOWERS input costs, so price recovers only partway: below $6 but above $4.", "HW 8b Q12"],
+["h8b13", "lr-costind", "HW 8b Q13", "Figure 9-2: a perfectly competitive INCREASING-cost industry has just had an increase in demand, raising the firm's price from P0 to P1. What happens next?", ["Supply has shifted right and costs stayed the same; the new price is back at P0.", "Supply has shifted right and costs rose; the new price is above P0 but below P1.", "Supply has shifted right and costs fell; the new price is below both P0 and P1."], 1, "Increasing cost: entry pushes input costs UP. Supply shifts right, but the new long-run price stays above P0 (and below the short-run peak P1).", "HW 8b Q13"],
+["h9_1", "mo-pricedisc", "HW 9 Q1", "Which statement about price discrimination is correct?", ["A price discriminator must make sure items can be resold between high- and low-price groups.", "A price discriminator charges the highest price to customers with the most elastic demand.", "To maximize profit, a price discriminator separates groups with different demands and charges more to those with more inelastic demand.", "Price discrimination is always more profitable than a single price."], 2, "Inelastic buyers are less sensitive to price, so they pay more. Resale must be PREVENTED, and it's not always more profitable.", "HW 9 Q1"],
+["h9_2a", "mo-mr", "HW 9 Q2", "Local Power Corp. (a monopoly) demand schedule\nPrice: $7, $6, $5, $4, $3, $2\nQuantity: 10, 15, 20, 25, 30, 35\n\nMoving from $7 (Q = 10) to $6 (Q = 15), what are total revenue at $6 and marginal revenue (per unit)?", ["TR = 90; MR = 4", "TR = 90; MR = 20", "TR = 70; MR = 6", "TR = 100; MR = 2"], 0, "TR = 6 × 15 = 90. MR = (90 − 70) ÷ (15 − 10) = 20 ÷ 5 = 4 per unit.", "HW 9 Q2"],
+["h9_2b", "mo-mr", "HW 9 Q2", "Local Power Corp. (a monopoly) demand schedule\nPrice: $7, $6, $5, $4, $3, $2\nQuantity: 10, 15, 20, 25, 30, 35\n\nAt what price is total revenue at its maximum, and what is marginal revenue there?", ["$4: TR = 100, MR = 0", "$7: TR = 70, MR = 7", "$2: TR = 70, MR = −4", "$5: TR = 100, MR = 4"], 0, "TR: 70, 90, 100, 100, 90, 70. Going from $5 to $4 TR stays 100, so MR = 0. TR peaks where MR = 0 (unit elastic).", "HW 9 Q2"],
+["h9_2c", "mo-mr", "HW 9 Q2", "Local Power Corp. (a monopoly) demand schedule\nPrice: $7, $6, $5, $4, $3, $2\nQuantity: 10, 15, 20, 25, 30, 35\n\nWhat is marginal revenue when the price drops from $3 (Q = 30) to $2 (Q = 35)?", ["−4", "−2", "2", "70"], 0, "TR falls from 90 to 70, so MR = (70 − 90) ÷ 5 = −4. Negative MR means demand is inelastic here.", "HW 9 Q2"],
+["h9_3", "mo-maxprofit", "HW 9 Q3", "Table 11-1 (monopoly)\nQ: 1, 2, 3, 4, 5\nPrice: $30, $25, $20, $15, $10\nTotal cost: $3, $7, $12, $18, $25\n\nProfit is maximized at which unit of output?", ["1", "2", "3", "4"], 2, "TR = 30, 50, 60, 60, 50. Profit = TR − TC = 27, 43, 48, 42, 25. Highest at 3 units. (MR of the 4th unit is $0 but its MC is $6.)", "HW 9 Q3"],
+["h9_4", "mo-pricedisc", "HW 9 Q4", "Price discrimination is…", ["charging different prices based on race or sex due to bigotry, at the cost of reduced profits.", "charging different prices to different consumers due to differences in elasticity of demand, which increases profits.", "charging different prices for consumers' benefit, reducing profits.", "all of the above."], 1, "In economics, price discrimination is about elasticity and profit, not bigotry.", "HW 9 Q4"],
+["h9_5", "mo-barriers", "HW 9 Q5", "An industry is a natural monopoly when…", ["market demand for the product is inelastic.", "legal barriers limit entry.", "diseconomies of scale are present.", "long-run ATC keeps declining as firm size increases.", "larger firms have higher per-unit costs than smaller rivals."], 3, "Economies of scale across the whole market make one large firm the cheapest producer. Legal barriers make a monopoly, but not a NATURAL one.", "HW 9 Q5"],
+["h9_6", "mo-regulation", "HW 9 Q6", "Regulating monopolies with average total cost pricing (regulated normal-profit pricing) is likely to…", ["increase the monopolist's incentive to minimize cost.", "increase output compared with being unregulated.", "completely eliminate the welfare loss from monopoly.", "do all of the above."], 1, "Setting P = ATC moves output closer to efficient, but not all the way (some welfare loss stays), and it weakens the incentive to cut costs.", "HW 9 Q6"],
+["h9_7", "mo-mr", "HW 9 Q7", "Table 11-1 (monopoly)\nQ: 1, 2, 3, 4, 5\nPrice: $30, $25, $20, $15, $10\nTotal cost: $3, $7, $12, $18, $25\n\nThe marginal revenue of the second unit is", ["$25", "$10", "$20", "$15"], 2, "TR(1) = $30, TR(2) = 2 × $25 = $50. MR = 50 − 30 = $20. Less than the $25 price because the first unit's price also dropped.", "HW 9 Q7"],
+["h9_8", "mo-regulation", "HW 9 Q8", "Compared with the profit-maximizing outcome, average cost pricing in a natural monopoly leads to…", ["less output.", "decreased consumer surplus.", "a higher price.", "the elimination of economic profit."], 3, "P = ATC means zero economic profit, with more output, a lower price and more consumer surplus than the unregulated monopoly.", "HW 9 Q8"],
+["h9_9", "mo-maxprofit", "HW 9 Q9", "A monopoly: at MC = MR, quantity is 1,000 and the demand curve is at $10 there; ATC at that output is $6. MC crosses demand at 1,300 units, at a price of $7. Which is correct?", ["Profit-max output 0 at $18, profit $0; efficient output 1,300 at $7.", "Profit-max output 1,000 at $10, profit $4,000; efficient output 1,300 at $7.", "Profit-max output 1,000 at $10, profit $3,000; efficient output 1,300 at $6.", "Profit-max output 1,300 at $7, profit $0; efficient output 1,000 at $10."], 1, "Profit max: MR = MC → 1,000 units, price from demand $10. Profit = (10 − 6) × 1,000 = $4,000. Efficient: where MC meets demand → 1,300 at $7. (The homework's text description listed ATC as $7, but its answer key of $4,000 matches ATC = $6.)", "HW 9 Q9"],
+["h9_10", "mo-regulation", "HW 9 Q10", "What problem arises when regulators force a natural monopoly (like an electric utility) to charge the price where marginal cost meets demand?", ["This price will force the firm out of business in the long run.", "The firm has an incentive to pad its fixed costs.", "When price equals MC, new firms enter and drive up costs.", "Both b and c."], 0, "For a natural monopoly ATC is falling, so MC is below ATC. P = MC means P < ATC: a loss every period unless it gets a subsidy.", "HW 9 Q10"],
+["h9_11", "mo-maxprofit", "HW 9 Q11", "If marginal cost exceeds marginal revenue, a profit-maximizing monopolist will…", ["reduce output and increase price.", "stay put, since this is consistent with profit maximization.", "raise price and expand output.", "lower price and expand output."], 0, "The last units cost more than they bring in. Make fewer, and moving up the demand curve means a higher price.", "HW 9 Q11"],
+["h10_1", "mc-vs-pc", "HW 10 Q1", "Which is true about a perfectly competitive firm vs. a monopolistically competitive firm in the long run?", ["Only the price taker sells at a price equal to ATC.", "Both sell at P = ATC, but only the competitive price searcher produces at minimum ATC.", "Only the competitive price searcher sells at P = ATC.", "Both sell at P = ATC, but only the price taker produces at minimum ATC."], 3, "Entry drives both to zero profit (P = ATC). The monopolistic competitor's demand slopes down, so it touches ATC to the LEFT of the minimum (excess capacity).", "HW 10 Q1"],
+["h10_2", "mc-traits", "HW 10 Q2", "Which is NOT a characteristic of monopolistic competition?", ["Each firm faces a downward-sloping demand curve.", "The number of firms is large.", "Each firm makes a differentiated product.", "Entry barriers are high."], 3, "Monopolistic competition has LOW entry barriers. High barriers describe monopoly or oligopoly.", "HW 10 Q2"],
+["h10_3", "mc-shortlong", "HW 10 Q3", "When entry barriers are low, firms in a monopolistically competitive market…", ["can expect competitors to enter if current firms earn positive economic profit.", "can expect many new rivals regardless of profitability.", "can never earn economic profit.", "will always earn economic profit."], 0, "Entry follows profit. Short-run profit is possible; entry then removes it in the long run.", "HW 10 Q3"],
+["h10_4", "mc-traits", "HW 10 Q4", "Which most closely approximates monopolistic competition?", ["The restaurant industry: differentiated products, low entry barriers", "Local cable TV, where a licensed supplier competes with satellite", "Jumbo aircraft: one domestic firm vs. one foreign firm", "Grade A eggs: many firms, homogeneous product"], 0, "Restaurants are the textbook case. Aircraft is oligopoly (duopoly), eggs are perfect competition, licensed cable is close to monopoly.", "HW 10 Q4"],
+["h10_5", "mc-shortlong", "HW 10 Q5", "Figure 11-1, a monopolistically competitive firm. P1 is where MC = MR. P2 is where MC = ATC. P3 is where ATC = D. P4 is where MC = D. P5 is on the demand curve directly above where MC = MR.\n\nWhat price should this firm charge to maximize profit?", ["P1", "P2", "P3", "P4", "P5"], 4, "Choose quantity where MC = MR, then charge the highest price buyers will pay for it: go straight up to the demand curve. P1 is just the height of MC = MR, not the price.", "HW 10 Q5"],
+["h10_6", "mc-vs-pc", "HW 10 Q6", "Which is correct?", ["A monopolistic competitor's demand is more elastic than a monopoly's, but less elastic than a perfect competitor's.", "It is more elastic than both a monopoly's and a perfect competitor's.", "It is less elastic than a monopoly's, but more elastic than a perfect competitor's.", "It is less elastic than both."], 0, "It has close substitutes (more elastic than monopoly), but its product is a bit different, so it's not perfectly elastic like a price taker's.", "HW 10 Q6"],
+["h10_7", "mc-shortlong", "HW 10 Q7", "A key difference for a monopolistically competitive firm between the short run and the long run is that in the short run,", ["there are many firms, but in the long run only a few.", "price may exceed MR, but in the long run P = MR.", "price may exceed ATC, but in the long run P = ATC.", "price may exceed MC, but in the long run P = MC."], 2, "Short-run profit (P > ATC) attracts entry until P = ATC. P stays above MR and MC even in the long run.", "HW 10 Q7"],
+["h10_8", "ol-oligopoly", "HW 10 Q8", "A market where a small number of sellers make up the entire industry is called", ["oligopoly.", "monopoly.", "monopolistic competition.", "monopsony."], 0, "Oligo = few. Monopsony is a single BUYER.", "HW 10 Q8"],
+["h10_9", "ol-oligopoly", "HW 10 Q9", "Why do oligopolists (cartel members) have an incentive to cheat on agreements that maximize joint profit?", ["They'd like the industry to produce more at a lower price.", "The demand curve facing each firm is more elastic than the market demand curve.", "The industry demand curve is more elastic than each firm's demand curve.", "Each firm could gain by charging more than the joint profit-max price."], 1, "If one firm secretly shaves its price while others hold theirs, it steals lots of customers. Its own demand is very elastic, so cheating pays for that firm.", "HW 10 Q9"],
+["h10_10", "mc-shortlong", "HW 10 Q10", "If firms in a monopolistically competitive market are earning economic profit, over time…", ["new firms enter, and current firms' demand increases until zero profit.", "new firms enter, and current firms' demand decreases until zero profit.", "some firms exit, and remaining firms' demand decreases until zero profit.", "some firms exit, and remaining firms' demand increases until zero profit."], 1, "New rivals take customers, so each existing firm's demand shifts left until P = ATC.", "HW 10 Q10"],
+["h10_11", "mc-shortlong", "HW 10 Q11", "As firms exit a monopolistically competitive market, the remaining firms' profits…", ["decline and product diversity increases.", "decline and product diversity decreases.", "rise and product diversity decreases.", "rise and product diversity increases."], 2, "Exit sends customers to the firms that stay (demand rises, losses shrink), but there are fewer product varieties.", "HW 10 Q11"],
+["n1", "pc-model", "New", "Which is NOT a characteristic of perfect competition?", ["Many small firms", "An identical product", "Low barriers to entry", "Firms use advertising to differentiate their brands"], 3, "Advertising and brands mean differentiated products, which is monopolistic competition. Price takers sell identical goods.", "Concept: perfect competition"],
+["n2", "pc-model", "New", "The demand curve facing an individual perfectly competitive firm is…", ["horizontal (perfectly elastic) at the market price.", "downward sloping, like the market demand curve.", "vertical (perfectly inelastic).", "upward sloping."], 0, "The firm can sell any amount at the market price and nothing above it, so its demand is a flat line: P = MR = D.", "Concept: perfect competition"],
+["n3", "pc-maxprofit", "New", "The market price of wheat is $8 a bushel. For a small wheat farmer, the marginal revenue of the 100th bushel is…", ["$8", "less than $8", "$800", "impossible to know without cost data"], 0, "For a price taker, every extra unit sells at the same price, so MR = P = $8.", "Concept: P = MR"],
+["n4", "pc-maxprofit", "New", "At its current output, a price taker's marginal cost is $14 and the market price is $11. To maximize profit it should…", ["reduce output until MC = $11.", "increase output.", "raise its price to $14.", "keep output the same."], 0, "The last units cost $14 but sell for $11, so each loses $3. Cut back until MC falls to the price.", "Concept: P = MC rule"],
+["n5", "pc-maxprofit", "New", "A price taker sells at $10. Marginal cost of units 1 to 5 is $4, $6, $8, $10, $12. How many units maximize profit?", ["4", "3", "5", "1"], 0, "Produce while P ≥ MC: units 1-3 add profit, the 4th breaks even (P = MC), and the 5th loses $2. The P = MC rule says 4.", "Concept: P = MC rule"],
+["n6", "pc-profitcalc", "New", "A competitive firm sells 500 units at $12. Its ATC at that output is $10. Its economic profit is…", ["$1,000", "$6,000", "$5,000", "−$1,000"], 0, "(P − ATC) × Q = (12 − 10) × 500 = $1,000.", "Concept: profit = (P − ATC) × Q"],
+["n7", "pc-profitcalc", "New", "A business shows $50,000 of accounting profit, but the owner gave up a $60,000 job to run it. Economic profit is…", ["−$10,000", "$50,000", "$110,000", "$10,000"], 0, "Economic profit subtracts implicit (opportunity) costs too: 50,000 − 60,000 = −$10,000.", "Concept: economic vs accounting profit"],
+["n8", "pc-shutdown", "New", "Price is $5. A competitive firm's minimum AVC is $4 and its ATC at the best output is $7. In the short run it should…", ["keep producing, because it loses less than its fixed cost.", "shut down immediately.", "raise its price to $7.", "produce where MC = ATC."], 0, "P > AVC, so each unit covers its variable cost plus some fixed cost. It loses money, but less than shutting down would (losing all fixed cost).", "Concept: shutdown rule"],
+["n9", "pc-shutdown", "New", "A competitive firm's short-run supply curve is…", ["its marginal cost curve above minimum AVC.", "its ATC curve.", "its MC curve above minimum ATC only.", "the market demand curve."], 0, "At any price above min AVC it produces where P = MC, so the MC curve (above the shutdown point) shows how much it supplies.", "Concept: shutdown rule"],
+["n10", "pc-shutdown", "New", "For a price taker, the shutdown point and the break-even point are…", ["minimum AVC and minimum ATC.", "minimum ATC and minimum AVC.", "both at minimum MC.", "where MC = MR and where MC = AVC."], 0, "Below min AVC, shut down. At min ATC, profit is exactly zero (break even).", "Concept: shutdown vs break-even"],
+["n11", "pc-profitcalc", "New", "Figure 8-6: ATC is U-shaped with a minimum at (125, $30). AVC is U-shaped, below ATC, with a minimum at (100, $20). MC passes through both minimums.\n\nIf the market price is $20, what happens?", ["The firm makes 100 units and takes a loss, right at its shutdown point.", "The firm makes 125 units and breaks even.", "The firm earns a positive profit.", "The firm makes 150 units."], 0, "$20 = minimum AVC (at 100 units). P < ATC, so it loses money, and any lower price would make it shut down.", "Concept: shutdown point"],
+["n12", "lr-entryexit", "New", "In long-run equilibrium, a perfectly competitive firm has…", ["P = MC = minimum ATC and zero economic profit.", "P > ATC and positive economic profit.", "P = AVC and losses.", "P > MC and excess capacity."], 0, "Entry and exit push price to the bottom of ATC. Firms make a normal return and produce at the lowest possible cost.", "Concept: long-run equilibrium"],
+["n13", "lr-entryexit", "New", "Firms in a competitive industry are losing money. In the long run…", ["some exit, supply shifts left, and price rises until profit is zero.", "firms enter and price falls further.", "the government must set a price floor.", "nothing changes because firms are price takers."], 0, "Exit cuts market supply, raising price until the remaining firms break even.", "Concept: exit"],
+["n14", "lr-costind", "New", "Why does the long-run supply curve of an increasing-cost industry slope upward?", ["Industry expansion bids up the prices of key inputs, raising every firm's costs.", "Firms get economies of scale as they grow.", "Demand curves slope down.", "The government taxes new firms."], 0, "More firms compete for the same limited inputs (land, skilled labor), so costs rise and a higher price is needed to cover them.", "Concept: increasing cost"],
+["n15", "lr-costind", "New", "In a decreasing-cost industry, the long-run supply curve…", ["slopes downward.", "is horizontal.", "slopes upward.", "is vertical."], 0, "As the industry grows, costs fall (e.g. specialized suppliers get economies of scale), so the long-run price falls as output rises.", "Concept: decreasing cost"],
+["n16", "lr-supply", "New", "A constant-cost competitive industry starts in long-run equilibrium. Demand increases permanently. In the long run…", ["price returns to its original level and quantity is larger.", "price stays higher and quantity is unchanged.", "price falls below the original level.", "price and quantity both return to where they started."], 0, "Short-run profit attracts entry until price is back at min ATC (costs never changed). More firms means more total output.", "Concept: constant cost"],
+["n17", "lr-supply", "New", "A constant-cost industry: demand falls. Which sequence is right?", ["Price falls → losses → firms exit → price returns to the original level", "Price falls → profits → firms enter → price falls more", "Price rises → losses → firms exit", "Price falls and stays permanently lower"], 0, "The demand drop causes losses; exit shrinks supply until price is back at min ATC.", "Concept: constant cost"],
+["n18", "lr-entryexit", "New", "A competitive firm earning zero economic profit is…", ["covering all its costs, including the opportunity cost of the owner's time and money.", "about to go out of business.", "earning zero accounting profit.", "being badly managed."], 0, "Zero economic profit = a normal return. The owners earn what they could get in their next-best option.", "Concept: normal profit"],
+["n19", "mo-barriers", "New", "Which is NOT a barrier to entry that can create a monopoly?", ["Many sellers of an identical product", "A patent", "A government license or franchise", "Control of an essential resource"], 0, "Many sellers of an identical product is perfect competition, the opposite of monopoly.", "Concept: barriers to entry"],
+["n20", "mo-barriers", "New", "Can a monopolist keep earning economic profit in the long run?", ["Yes, if barriers to entry keep rivals out.", "No, entry always removes it.", "Only if it charges the lowest price.", "Only if demand is perfectly elastic."], 0, "Unlike competitive markets, blocked entry means profit doesn't attract new firms.", "Concept: monopoly"],
+["n21", "mo-mr", "New", "Why is a monopolist's marginal revenue less than its price?", ["To sell one more unit, it must lower the price on all units it sells.", "Its costs rise as it produces more.", "The government taxes each unit.", "It is a price taker."], 0, "The extra unit brings in its price, but every other unit now sells for a little less, so MR falls below P.", "Concept: MR < P"],
+["n22", "mo-mr", "New", "A profit-maximizing monopolist will never produce on the part of the demand curve where…", ["demand is inelastic, because MR is negative there.", "demand is elastic.", "price is above ATC.", "MR is positive."], 0, "With inelastic demand, cutting output RAISES revenue and lowers cost. Producing more there only loses money.", "Concept: MR and elasticity"],
+["n23", "mo-maxprofit", "New", "How does a monopolist choose its price?", ["Find Q where MR = MC, then charge the price on the demand curve at that Q.", "Set price where MR = MC.", "Set price where ATC is lowest.", "Charge the highest price on the demand curve."], 0, "Quantity comes from MR = MC; the price comes from demand above that quantity, which is higher than MC.", "Concept: monopoly pricing"],
+["n24", "mo-maxprofit", "New", "MR = MC at 200 units. The demand curve is at $50 there and ATC is $35. Profit is…", ["$3,000", "$10,000", "$7,000", "$1,500"], 0, "(50 − 35) × 200 = $3,000.", "Concept: profit = (P − ATC) × Q"],
+["n25", "mo-maxprofit", "New", "Compared with a competitive industry with the same costs, a monopoly…", ["charges more, produces less, and creates a deadweight loss.", "charges more and produces more.", "charges less and produces less.", "charges the same price but earns more profit."], 0, "The monopolist stops where MR = MC, short of where P = MC, so some trades worth more than their cost never happen.", "Concept: deadweight loss"],
+["n26", "mo-regulation", "New", "With marginal cost pricing, a regulated natural monopoly usually…", ["produces the efficient output but loses money, so it needs a subsidy.", "earns large economic profit.", "produces less than an unregulated monopoly.", "has no incentive to produce."], 0, "MC lies below falling ATC, so P = MC means P < ATC, a loss on every unit.", "Concept: MC pricing"],
+["n27", "mo-regulation", "New", "A drawback of average cost pricing for a regulated monopoly is that…", ["the firm has little incentive to keep costs low, since higher costs mean a higher allowed price.", "the firm always goes bankrupt.", "output falls below the unregulated level.", "the price ends up below marginal cost."], 0, "If the regulator sets P = ATC, any cost increase gets passed to customers, so cost control weakens (cost padding).", "Concept: ATC pricing"],
+["n28", "mo-pricedisc", "New", "Which is NOT required for successful price discrimination?", ["The product must be identical to rivals' products.", "The firm must have some market power.", "Buyers must be split into groups with different elasticities.", "Resale between groups must be prevented."], 0, "Discrimination needs market power, separable groups and no resale. Identical products and many rivals make it impossible.", "Concept: price discrimination"],
+["n29", "mo-pricedisc", "New", "Movie theaters charge students less than other adults. This is an example of…", ["price discrimination: students have more elastic demand.", "price discrimination: students have more inelastic demand.", "perfect competition.", "average cost pricing."], 0, "Students are more price-sensitive (elastic), so they get the lower price. A student ID prevents resale.", "Concept: price discrimination"],
+["n30", "mc-traits", "New", "Firms in monopolistic competition differentiate their products mainly through…", ["quality, location, style, service and advertising.", "government licenses.", "controlling key resources.", "charging exactly the market price."], 0, "Small differences give each firm a little market power, so its demand slopes down.", "Concept: product differentiation"],
+["n31", "mc-traits", "New", "Why do monopolistically competitive firms advertise?", ["To make their product seem different and make demand less elastic.", "Because price takers must advertise.", "To raise entry barriers to monopoly level.", "To lower the market price."], 0, "Brand loyalty means fewer customers leave when price rises: a less elastic demand curve.", "Concept: advertising"],
+["n32", "mc-vs-pc", "New", "In long-run equilibrium, a monopolistically competitive firm has…", ["P = ATC, P > MC, and output below minimum ATC (excess capacity).", "P = MC = minimum ATC.", "P > ATC and positive profit.", "P < ATC and losses."], 0, "Zero profit like a price taker, but its demand slopes down, so it touches ATC to the left of the minimum.", "Concept: excess capacity"],
+["n33", "mc-vs-pc", "New", "How does a monopolistically competitive firm choose output?", ["Where MR = MC, just like a monopolist", "Where P = MC, like a price taker", "Where ATC is lowest", "Where demand is unit elastic"], 0, "Every profit maximizer uses MR = MC. Because its demand slopes down, MR < P.", "Concept: MR = MC"],
+["n34", "mc-shortlong", "New", "Monopolistically competitive firms are losing money. In the long run…", ["some exit, and remaining firms' demand increases until losses are gone.", "firms enter and demand falls further.", "they all merge into a monopoly.", "price falls until P = MC."], 0, "Exit sends customers to the survivors, shifting their demand right until P = ATC.", "Concept: exit"],
+["n35", "ol-oligopoly", "New", "Which best describes oligopoly?", ["A few interdependent firms, often protected by entry barriers", "Many firms with differentiated products", "One firm with no close substitutes", "Many firms selling an identical product"], 0, "With only a few firms, each one's decisions affect the others, so firms must predict rivals' reactions.", "Concept: oligopoly"],
+["n36", "ol-oligopoly", "New", "A cartel is…", ["a group of firms that agree to limit output and raise price to maximize joint profit.", "a single firm with a patent.", "a government agency that regulates prices.", "a group of buyers that negotiate lower prices."], 0, "OPEC is the classic example. Cartels act like a monopoly, if members stick to the deal.", "Concept: cartels"],
+["n37", "ol-oligopoly", "New", "Which makes collusion among oligopolists HARDER to keep going?", ["Many firms and low barriers to entry", "Few firms", "Identical products", "Easy to spot when a rival cuts price"], 0, "More firms are harder to coordinate and monitor, and low barriers let outsiders enter and undercut the cartel price.", "Concept: collusion"],
+["n38", "ol-game", "New", "Two firms each choose a high or low price. Both high: each earns $10. One low, one high: the low firm earns $15 and the high firm $2. Both low: each earns $5. What is the likely outcome?", ["Both charge low and earn $5 each.", "Both charge high and earn $10 each.", "One charges high and one charges low.", "Neither firm produces."], 0, "Low is each firm's dominant strategy (15 > 10 if the rival goes high; 5 > 2 if the rival goes low). Both choose low and end up worse off than at high/high: a prisoner's dilemma.", "Concept: prisoner's dilemma"],
+["n39", "ol-game", "New", "A dominant strategy is…", ["the best choice for a player no matter what the other player does.", "the strategy that gives both players the most combined profit.", "the strategy the biggest firm chooses.", "a strategy that is always cooperative."], 0, "If a move beats the alternatives whatever the rival does, it's dominant, even if both players would do better by cooperating.", "Concept: game theory"],
+["n40", "ol-game", "New", "The prisoner's dilemma explains why…", ["cartels tend to break down: each member gains by cheating, even though all do worse when everyone cheats.", "monopolies earn long-run profit.", "perfect competitors take the market price.", "natural monopolies need regulation."], 0, "Individually rational choices lead to a group outcome that's worse for everyone in the game.", "Concept: prisoner's dilemma"],
+["n41", "mc-vs-pc", "New", "Rank demand elasticity facing a single firm, from LEAST to MOST elastic.", ["Monopoly, monopolistic competition, perfect competition", "Perfect competition, monopolistic competition, monopoly", "Monopolistic competition, monopoly, perfect competition", "Monopoly, perfect competition, monopolistic competition"], 0, "A monopoly has no close substitutes; a monopolistic competitor has close ones; a price taker has perfect substitutes (horizontal demand).", "Concept: elasticity by market structure"],
+["n42", "pr-product", "New", "A bakery hires a 4th worker and output rises from 100 to 130 loaves. The marginal product of the 4th worker is…", ["30 loaves", "130 loaves", "32.5 loaves", "25 loaves"], 0, "MP = Δq ÷ ΔL = (130 − 100) ÷ 1 = 30. (32.5 is average product: 130 ÷ 4.)", "Concept: marginal product"],
+["n43", "pr-product", "New", "The law of diminishing returns says that…", ["adding more of a variable input to a fixed input eventually makes marginal product fall.", "costs always fall as a firm grows.", "total output eventually falls to zero.", "doubling every input doubles output."], 0, "With a fixed kitchen, each extra cook adds less and less. It's a short-run idea (some input is fixed), unlike economies of scale.", "Concept: diminishing returns"],
+["n44", "pr-product", "New", "Output with 1, 2, 3, 4 workers is 10, 25, 35, 40. Diminishing returns begin with the…", ["3rd worker", "2nd worker", "4th worker", "1st worker"], 0, "MP = 10, 15, 10, 5. MP rises with worker 2, then starts falling with worker 3.", "Concept: diminishing returns"],
+["n45", "pr-costs", "New", "A firm hires 8 workers at $15 an hour for an 8-hour day, and its fixed cost is $400 a day. Its daily total cost is…", ["$1,360", "$960", "$400", "$520"], 0, "VC = L × wage = 8 × 8 hours × $15 = $960. TC = VC + FC = 960 + 400 = $1,360.", "Concept: TC = VC + FC"],
+["n46", "pr-costs", "New", "At q = 50, a firm's total cost is $1,000 and its fixed cost is $250. What are ATC, AVC and AFC?", ["ATC $20, AVC $15, AFC $5", "ATC $15, AVC $20, AFC $5", "ATC $20, AVC $5, AFC $15", "ATC $25, AVC $20, AFC $5"], 0, "ATC = 1000/50 = 20. VC = 1000 − 250 = 750 → AVC = 15. AFC = 250/50 = 5. Check: AVC + AFC = 20 = ATC.", "Concept: average costs"],
+["n47", "pr-costs", "New", "Total cost rises from $500 to $560 when output goes from 20 to 23 units. Marginal cost is…", ["$20 per unit", "$60 per unit", "$24.35 per unit", "$3 per unit"], 0, "MC = ΔTC ÷ Δq = 60 ÷ 3 = $20.", "Concept: marginal cost"],
+["n48", "pr-costs", "New", "As output increases, average fixed cost…", ["keeps falling.", "keeps rising.", "is U-shaped.", "stays constant."], 0, "The same fixed cost is spread over more units. That's why the gap between ATC and AVC shrinks.", "Concept: AFC"],
+["n49", "pr-costs", "New", "The marginal cost curve crosses…", ["the AVC and ATC curves at their minimum points.", "ATC at its maximum.", "AFC at its minimum.", "nothing; it is always below AVC."], 0, "When MC is below an average it pulls the average down; above, it pulls it up. So MC crosses each average at its lowest point.", "Concept: cost curves"],
+["n50", "pr-longrun", "New", "You paid $5,000 (non-refundable) for a booth at a festival. On the day, it looks like you'll earn $3,000 in sales against $1,000 in new costs to run the booth. Should you run it?", ["Yes: the $5,000 is sunk, and running it adds $2,000.", "No: you'd lose $3,000 overall.", "No: never operate at a loss.", "Only if sales cover the $5,000."], 0, "Sunk costs are gone whatever you do, so ignore them. Compare only future benefits ($3,000) with future costs ($1,000).", "Concept: sunk costs"],
+["n51", "pr-longrun", "New", "When a firm doubles all its inputs, its output more than doubles. This is…", ["economies of scale (LRATC falling).", "diseconomies of scale.", "diminishing returns.", "constant returns to scale."], 0, "More than double the output for double the cost means cost per unit falls.", "Concept: economies of scale"],
+["n52", "pr-profit", "New", "Which is an IMPLICIT cost of running your own business?", ["The salary you give up by not working elsewhere", "Rent paid to a landlord", "Wages paid to employees", "The electricity bill"], 0, "Implicit costs are opportunities given up, not payments made.", "Concept: implicit costs"],
+["n53", "lr-supply", "New", "Why is perfect competition considered efficient in the long run?", ["P = MC (allocative efficiency) and firms produce at minimum ATC (productive efficiency).", "Firms earn large economic profits.", "There is only one firm, so there's no waste.", "Price is above marginal cost."], 0, "Every unit buyers value more than its cost gets produced, and at the lowest possible cost per unit.", "Exam topic: efficiency of perfect competition"],
+["n54", "mo-barriers", "New", "A social network becomes more valuable to each user as more people join, making it hard for new rivals to compete. This barrier is called…", ["network effects.", "a patent.", "occupational licensing.", "diseconomies of scale."], 0, "When a product's value grows with its number of users, the biggest network tends to win the market.", "Exam topic: why monopolies occur"],
+["n55", "mo-barriers", "New", "Requiring a state license to work as a hair braider is an example of which barrier to entry?", ["A legal barrier (occupational licensing)", "Control of a key resource", "Network effects", "A natural monopoly"], 0, "Legal barriers include copyrights, patents and occupational licensing.", "Exam topic: why monopolies occur"],
+["n56", "mo-pricedisc", "New", "A monopolist charges every customer exactly their maximum willingness to pay. This is…", ["first-degree price discrimination.", "second-degree price discrimination.", "third-degree price discrimination.", "average cost pricing."], 0, "First degree, the 'amazing telepathic monopolist', captures all consumer surplus. Output reaches the efficient level, so there's no deadweight loss.", "Exam topic: price discrimination"],
+["n57", "mo-pricedisc", "New", "A store sells one can of soda for $1.50 but a 12-pack for $6. This is…", ["second-degree price discrimination (volume-based).", "first-degree price discrimination.", "third-degree price discrimination.", "not price discrimination."], 0, "Second degree = the price depends on how much you buy.", "Exam topic: price discrimination"],
+["n58", "mo-pricedisc", "New", "A museum charges seniors and children less than other adults. This is…", ["third-degree price discrimination.", "first-degree price discrimination.", "second-degree price discrimination.", "marginal cost pricing."], 0, "Third degree = different prices based on consumer characteristics (age, student status, location).", "Exam topic: price discrimination"],
+["n59", "mo-maxprofit", "New", "Monopoly is inefficient in a static sense, but may be efficient in a dynamic sense because…", ["the chance of earning monopoly profit (e.g. through patents) rewards innovation and new products.", "monopolies always charge P = MC.", "monopolies have no deadweight loss.", "monopolies produce at minimum ATC."], 0, "Static: deadweight loss today. Dynamic: temporary monopoly profit is the reward that encourages firms to invent things in the first place.", "Exam topic: efficiency of monopoly"],
+["n60", "mo-regulation", "New", "Breaking up a monopoly, blocking a merger, or banning price-fixing are all examples of…", ["antitrust law.", "marginal cost pricing.", "average cost pricing.", "price discrimination."], 0, "Antitrust aims to keep markets competitive instead of regulating a monopoly's price.", "Exam topic: regulating monopoly"],
+["n61", "mc-vs-pc", "New", "Why is the efficiency of monopolistic competition considered 'unclear'?", ["P > MC and excess capacity are inefficient, but consumers value the variety of differentiated products.", "Firms earn huge long-run profits.", "It is perfectly efficient.", "There is only one firm."], 0, "You pay a bit more than in perfect competition, but you get many different restaurants, styles and brands to choose from.", "Exam topic: efficiency of monopolistic competition"],
+["n62", "ol-game", "New", "What are the 'two temptations' of oligopolists?", ["Collude to act like a monopoly, or compete (cheat) to win market share", "Enter or exit the market", "Shut down or keep producing", "Raise output or advertise more"], 0, "Colluding maximizes joint profit; cheating on the deal makes one firm more profit, until everyone does it.", "Exam topic: oligopoly"]
+].map(a=>({id:a[0],t:a[1],src:a[2],q:a[3],o:a[4],a:a[5],x:a[6],ref:a[7],lo:a[8]}));
+const LOQ=Q.filter(q=>q.lo);
+// LO answers were written as choice A; shuffle the choices the same way on every device (Roman numeral and "of the above" lists keep their order)
+LOQ.forEach(q=>{ if(q.o.some(o=>/^I only$|of the above/.test(o))) return;
+  let s=[...q.id].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7); const idx=q.o.map((_,i)=>i);
+  for(let i=idx.length-1;i>0;i--){s=(Math.imul(s,1103515245)+12345)>>>0; const j=s%(i+1); [idx[i],idx[j]]=[idx[j],idx[i]]}
+  const ans=q.o[q.a]; q.o=idx.map(i=>q.o[i]); q.a=q.o.indexOf(ans); });
+const QBY=Object.fromEntries(Q.map(q=>[q.id,q]));
+const BATCH=10, KEY="micro-exam-drill-v1";
+
+// ---------- state ----------
+const fresh=()=>({recs:{},batch:0,lastBatch:[],cur:null,updated:0});
+let S=fresh(), USER="";
+const userKey=()=>KEY+":"+USER.toLowerCase();
+function saveLocal(){snapPred();S.updated=Date.now();try{localStorage.setItem(userKey(),JSON.stringify(S))}catch(e){} cloudSave()}
+
+// ---------- adaptive model ----------
+function recOf(id){return S.recs[id]}
+function topicStats(t){
+  let num=0,den=0,att=0,right=0;
+  for(const q of Q){ if(q.t!==t) continue; const r=recOf(q.id); if(!r) continue;
+    att+=r.r+r.w; right+=r.r;
+    const h=r.h.slice(-4).reverse(); const ws=[1,.7,.5,.35];
+    h.forEach((v,i)=>{num+=ws[i]*v;den+=ws[i]});
+  }
+  const m=(num+1)/(den+2);
+  const status=den===0?"new":m<.55?"weak":m<.8?"shaky":"solid";
+  return {m,den,att,right,status};
+}
+function streak(r){let s=0;for(let i=r.h.length-1;i>=0&&r.h[i]===1;i--)s++;return s}
+// right this many times in a row: the question leaves the drills (still counts for mastery and the practice exam)
+const RETIRE=3;
+function retired(id){const r=recOf(id);return !!r&&streak(r)>=RETIRE}
+// topic first: weak topics dominate, untried topics get a fair share, solid ones rarely appear
+function tWeight(st){ if(st.status==="new") return 5; const weak=1-st.m; return .2+10*weak*weak }
+function qWeight(q){
+  let w=1;
+  const r=recOf(q.id);
+  if(!r) w*=1.3;
+  else{
+    const last=r.h[r.h.length-1];
+    if(last===0) w*=3.5;
+    if(r.w>=2) w*=1.5;
+    const s=streak(r); if(s>=2) w*=.25; else if(s===1) w*=.7;
+    if(S.lastBatch.includes(q.id)&&last===1) w*=.15;
+  }
+  return w;
+}
+function pick(pool,weights){let tot=weights.reduce((a,b)=>a+b,0),x=Math.random()*tot;for(let i=0;i<pool.length;i++){x-=weights[i];if(x<=0)return i}return pool.length-1}
+function buildBatch(){
+  const ts=Object.fromEntries(Object.keys(TOPICS).map(t=>[t,topicStats(t)]));
+  const anySeen=Object.values(S.recs).length>0;
+  let chosen=[];
+  if(!anySeen){
+    // diagnostic: 2 per module from different topics, favoring official review questions
+    for(const m of MLIST){
+      const ts2=Object.keys(TOPICS).filter(t=>TOPICS[t].m===m).sort(()=>Math.random()-.5).slice(0,2);
+      for(const t of ts2){const c=Q.filter(q=>q.t===t);const rv=c.filter(q=>q.src.startsWith("HW"));const p=(rv.length?rv:c);chosen.push(p[Math.floor(Math.random()*p.length)].id)}
+    }
+    chosen=chosen.sort(()=>Math.random()-.5).slice(0,BATCH);
+  }else{
+    const perTopic={}; let pool=Q.filter(q=>!retired(q.id));
+    // nearly everything retired: bring back the ones seen longest ago
+    if(pool.length<BATCH) pool=pool.concat(Q.filter(q=>retired(q.id)).sort((a,b)=>(recOf(a.id).lb||0)-(recOf(b.id).lb||0)).slice(0,BATCH-pool.length));
+    const solids=Object.keys(ts).filter(t=>ts[t].status==="solid");
+    const c=pool.filter(q=>solids.includes(q.t));
+    if(c.length){ // one spaced-review question from a topic you already know
+      const ws=c.map(q=>{const r=recOf(q.id);return r?1+(S.batch-(r.lb||0)):2});
+      const q=c[pick(c,ws)]; chosen.push(q.id); perTopic[q.t]=1; pool=pool.filter(p=>p.id!==q.id);
+    }
+    while(chosen.length<BATCH&&pool.length){
+      let tops=[...new Set(pool.map(q=>q.t))].filter(t=>(perTopic[t]||0)<3); if(!tops.length) break;
+      // 3 slots go to topics not tried yet, then up to 6 to weak and shaky topics, the rest open
+      const fresh=tops.filter(t=>ts[t].status==="new");
+      const usedNew=chosen.filter(id=>ts[QBY[id].t].status==="new").length;
+      const struggling=tops.filter(t=>ts[t].status==="weak"||ts[t].status==="shaky");
+      const used=chosen.filter(id=>["weak","shaky"].includes(ts[QBY[id].t].status)).length;
+      if(fresh.length&&usedNew<3) tops=fresh;
+      else if(struggling.length&&used<6) tops=struggling;
+      const t=tops[pick(tops,tops.map(t=>tWeight(ts[t])/(1+(perTopic[t]||0))))];
+      const ok=pool.filter(q=>q.t===t);
+      const q=ok[pick(ok,ok.map(qWeight))];
+      chosen.push(q.id); perTopic[q.t]=(perTopic[q.t]||0)+1; pool=pool.filter(p=>p.id!==q.id);
+    }
+    chosen.sort(()=>Math.random()-.5);
+  }
+  S.batch+=1;
+  S.cur={n:S.batch,ids:chosen,idx:0,ans:{},before:Object.fromEntries(Object.keys(TOPICS).map(t=>[t,ts[t].m]))};
+  saveLocal(); pushMeta();
+}
+
+
+// ---------- exam score predictor ----------
+// Each topic's chance of a right answer blends your recent tries (weighted most), all your past tries
+// on that topic, and your overall accuracy (for topics you have not seen much). Homeworks count equally,
+// like the practice exam; inside a module, topics with more official review questions count more.
+const TW=(()=>{const w={};for(const t in TOPICS)w[t]=1;for(const q of Q)if(q.src.startsWith("HW"))w[q.t]++;
+  for(const m of MLIST){const ts=Object.keys(TOPICS).filter(t=>TOPICS[t].m===m);const s=ts.reduce((a,t)=>a+w[t],0);ts.forEach(t=>w[t]=w[t]/s/MLIST.length)}return w})();
+function answerCount(){let n=0;for(const k in S.recs){const r=S.recs[k];n+=r.r+r.w}return n}
+function predict(){
+  let R=0,N=0; for(const k in S.recs){const r=S.recs[k];R+=r.r;N+=r.r+r.w}
+  const base=(R+.65*6)/(N+6), K=2.5; let score=0,vr=0,cov=0; const topics={};
+  for(const t in TOPICS){const st=topicStats(t); const num=st.m*(st.den+2)-1;
+    const n=st.den+.3*st.att+K, p=(num+.3*st.right+base*K)/n;
+    topics[t]=p; score+=TW[t]*p; vr+=TW[t]*TW[t]*p*(1-p)/n; if(st.den>0) cov+=TW[t]}
+  vr+=score*(1-score)/50; const sd=Math.sqrt(vr);
+  return {score,lo:Math.max(0,score-1.28*sd),hi:Math.min(1,score+1.28*sd),cov,n:N,topics}
+}
+function snapPred(){
+  const n=answerCount(); if(!n) return; const ph=S.ph||(S.ph=[]); const last=ph[ph.length-1];
+  if(last&&last.n===n) return; const p=predict(); const r=x=>Math.round(x*1000)/10;
+  ph.push({n,p:r(p.score),lo:r(p.lo),hi:r(p.hi),t:Date.now()});
+  if(ph.length>300) S.ph=ph.filter((x,i)=>i===0||i===ph.length-1||i%2===0);
+  try{pushMeta()}catch(e){}
+}
+const grade=s=>s>=90?"A":s>=80?"B":s>=70?"C":s>=60?"D":"F";
+function predLine(){
+  const n=answerCount(); if(!n) return "";
+  snapPred(); const ph=S.ph, cur=ph[ph.length-1]; const prev=ph.length>1?ph[Math.max(0,ph.length-11)]:null;
+  const d=prev?Math.round((cur.p-prev.p)*10)/10:0;
+  return `<p class="predline">Predicted exam score: <b>${Math.round(cur.p)}%</b> ${prev&&d?`<span class="${d>0?"up":"down"}">${d>0?"▲ +":"▼ −"}${Math.abs(d)} pts</span>`:""} <span class="hint">· see Progress for the trend</span></p>`;
+}
+function predChart(ph){
+  if(ph.length<2) return `<p class="hint">The graph fills in as you answer. Every answer adds a point.</p>`;
+  const W=640,H=200,pl=34,pr=10,pt=10,pb=26; const x0=ph[0].n,x1=ph[ph.length-1].n||1;
+  const lo=Math.max(0,Math.floor(Math.min(...ph.map(p=>p.lo))/10)*10-10), hi=Math.min(100,Math.ceil(Math.max(...ph.map(p=>p.hi))/10)*10);
+  const X=n=>pl+(W-pl-pr)*(x1===x0?1:(n-x0)/(x1-x0)), Y=v=>pt+(H-pt-pb)*(1-(v-lo)/(hi-lo||1));
+  const line=ph.map((p,i)=>(i?"L":"M")+X(p.n).toFixed(1)+" "+Y(p.p).toFixed(1)).join("");
+  const band=ph.map((p,i)=>(i?"L":"M")+X(p.n).toFixed(1)+" "+Y(p.hi).toFixed(1)).join("")+[...ph].reverse().map(p=>"L"+X(p.n).toFixed(1)+" "+Y(p.lo).toFixed(1)).join("")+"Z";
+  let grid=""; for(let v=lo;v<=hi;v+=10) grid+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" class="pg"/><text x="${pl-6}" y="${Y(v)+4}" class="pt" text-anchor="end">${v}</text>`;
+  const c=ph[ph.length-1];
+  return `<svg class="predsvg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Predicted score went from ${ph[0].p}% to ${c.p}% over ${c.n-x0} answers">${grid}
+  <path d="${band}" class="pb"/><path d="${line}" class="pl"/><circle cx="${X(c.n)}" cy="${Y(c.p)}" r="4.5" class="pd"/>
+  <text x="${pl}" y="${H-6}" class="pt">${x0} answers</text><text x="${W-pr}" y="${H-6}" class="pt" text-anchor="end">${c.n} answers</text></svg>`;
+}
+function predCard(){
+  const n=answerCount();
+  if(!n) return `<div class="card pred"><span class="eyebrow">Predicted exam score</span><p>Answer a batch and this will predict your exam score, then track it as you study.</p></div>`;
+  snapPred(); const p=predict(), ph=S.ph, c=ph[ph.length-1];
+  const prev=ph.length>1?ph[Math.max(0,ph.length-11)]:null, d=prev?Math.round((c.p-prev.p)*10)/10:0, since=prev?c.n-prev.n:0;
+  const sure=p.cov<.6||n<60?"Rough guess so far":p.cov<.9||n<150?"Getting more reliable":"Fairly reliable";
+  const gains=Object.keys(TOPICS).map(t=>({t,g:TW[t]*(1-p.topics[t])})).sort((a,b)=>b.g-a.g).slice(0,3);
+  return `<div class="card pred"><span class="eyebrow">Predicted exam score</span>
+  <div class="predtop"><div><div class="big">${Math.round(c.p)}%</div><div class="hint">about a ${grade(c.p)} · likely between ${Math.round(c.lo)}% and ${Math.round(c.hi)}%</div></div>
+  <div class="predside">${prev?`<div class="${d>0?"up":d<0?"down":""}"><b>${d>0?"▲ +":d<0?"▼ −":""}${Math.abs(d)} pts</b> over your last ${since} answers</div>`:""}
+  <div class="hint">${sure}: based on ${n} answers, ${Math.round(p.cov*100)}% of exam topics tried.</div></div></div>
+  ${predChart(ph)}
+  <p class="hint">How it works: it estimates your chance of getting each topic right from all your answers so far, counting recent ones most, then weights topics like the exam (each homework equal, topics with more homework questions count more). Topics you haven't tried are guessed from your overall accuracy, so the range narrows as you cover more.</p>
+  <b>Biggest points to gain</b><ul class="plain">${gains.map(x=>`<li>${esc(TOPICS[x.t].n)} <span class="hint">· now ${Math.round(p.topics[x.t]*100)}% · worth up to ${Math.round(x.g*1000)/10} pts</span></li>`).join("")}</ul></div>`;
+}
+
+// ---------- name-based saving ----------
+// Progress is one JSON blob per typed name, kept in this browser and in Supabase (rmi_load / rmi_save).
+const NS="micro-exam:", SB_URL="https://tcahkdavrvwrgkjhrmqd.supabase.co", SB_KEY="sb_publishable_YqSdN79t7LOG5wjCSDVBVw_l6SJGfUj";
+const syncEl=document.getElementById("sync");
+function setSync(t){syncEl.textContent=t}
+async function rpc(fn,body){const r=await fetch(SB_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});
+  if(!r.ok) throw new Error(r.status); const t=await r.text(); return t?JSON.parse(t):null}
+let saveTimer=null, saving=false, again=false;
+function cloudSave(){clearTimeout(saveTimer); saveTimer=setTimeout(flush,1200)}
+async function flush(){ if(!USER) return; if(saving){again=true;return} saving=true;
+  try{ do{again=false; await rpc("rmi_save",{p_name:NS+USER,p_data:S})}while(again); setSync("· saved for "+USER) }
+  catch(e){ setSync("· saved on this device only") }
+  saving=false }
+async function loadUser(name){
+  USER=name.trim().slice(0,40); try{localStorage.setItem(KEY+"-last",USER)}catch(e){}
+  S=fresh(); try{const s=JSON.parse(localStorage.getItem(userKey())||"null"); if(s&&s.recs) S=Object.assign(fresh(),s)}catch(e){}
+  document.getElementById("who").textContent=USER; render(); setSync("· loading…");
+  try{ const remote=await rpc("rmi_load",{p_name:NS+USER});
+    if(remote&&remote.recs&&(+remote.updated||0)>(+S.updated||0)){S=Object.assign(fresh(),remote); try{localStorage.setItem(userKey(),JSON.stringify(S))}catch(e){} render()}
+    else if(Object.keys(S.recs).length) flush();
+    setSync(remote?"· welcome back, progress loaded":"· new name, progress will save as you go");
+  }catch(e){ setSync("· saved on this device only") }
+}
+const pushRec=()=>{}, pushMeta=()=>{};
+const ND=document.getElementById("nd"), NI=document.getElementById("nd-in");
+function askName(){ try{NI.value=localStorage.getItem(KEY+"-last")||""}catch(e){} ND.showModal(); NI.focus(); NI.select() }
+document.getElementById("nd-form").onsubmit=e=>{e.preventDefault(); const n=NI.value.trim(); if(!n){NI.focus();return} ND.close(); loadUser(n)};
+ND.addEventListener("cancel",e=>{if(!USER)e.preventDefault()});
+document.getElementById("switch").onclick=askName;
+
+// ---------- rendering ----------
+const V=document.getElementById("view"); let view="drill";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const chip=(st,label)=>`<span class="chip ${st}">${label||({new:"New",weak:"Weak",shaky:"Shaky",solid:"Solid"})[st]}</span>`;
+function render(){ document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===view)); ({drill:renderDrill,exam:renderExam,lo:renderLO,progress:renderProgress,guide:renderGuide})[view](); }
+
+// ---------- practice exam: 50 questions, 10 per module, graded at the end ----------
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function buildExam(){
+  let ids=[];
+  for(const m of MLIST){
+    const pool=Q.filter(q=>TOPICS[q.t].m===m);
+    const official=shuffle(pool.filter(q=>q.src!=="New"&&!q.lo)), fresh=shuffle(pool.filter(q=>q.src==="New"||q.lo));
+    const pickN=official.slice(0,7).concat(fresh.slice(0,3));
+    const rest=shuffle(pool.filter(q=>!pickN.includes(q)));
+    ids=ids.concat(pickN.concat(rest).slice(0,10).map(q=>q.id));
+  }
+  S.exam={ids:shuffle(ids),idx:0,ans:{},done:false,n:(S.exam?.n||0)+1}; saveLocal();
+}
+function renderExam(){
+  const E=S.exam;
+  if(!E){V.innerHTML=`<div class="card"><span class="eyebrow">Like the real exam</span><h2 style="margin-top:6px">50-question practice exam</h2>
+    <p>10 questions from each homework (7, 8a, 8b, 9, 10), mostly real homework questions plus a few new ones. No answers are shown until you finish, then you get a score for each homework and every miss explained.</p>
+    <p class="hint">Your answers also count toward the drill, so anything you miss here shows up more in your batches.</p>
+    <div class="actions"><button class="btn" id="go">Start practice exam</button></div></div>`;
+    document.getElementById("go").onclick=()=>{buildExam();renderExam()}; return;}
+  if(E.done) return renderExamResults();
+  const q=QBY[E.ids[E.idx]]; const given=E.ans[q.id]; const answered=Object.keys(E.ans).length;
+  let h=`<div class="batchbar"><span class="eyebrow">Practice exam ${E.n} · Question ${E.idx+1} of ${E.ids.length}</span><span class="hint">${answered} answered</span></div>
+  <div class="card"><div class="qmeta"><span class="src">HW ${TOPICS[q.t].m}</span></div><p class="qtext">${esc(q.q)}</p><div class="opts" role="group" aria-label="Answer choices">`;
+  q.o.forEach((o,i)=>{h+=`<button class="opt ${given===i?"sel":""}" id="opt-${i}" data-i="${i}"><span class="L">${L[i]}</span><span>${esc(o)}</span></button>`});
+  h+=`</div><div class="actions"><button class="btn ghost" id="prev" ${E.idx===0?"disabled":""}>Back</button><button class="btn" id="nxt">${E.idx+1<E.ids.length?"Next":"Review and finish"}</button><button class="btn ghost" id="fin">Finish exam</button><span class="hint" id="finh"></span></div>
+  <div class="qgrid" aria-label="Jump to question">${E.ids.map((id,i)=>`<button class="${E.ans[id]!==undefined?"done":""} ${i===E.idx?"cur":""}" data-j="${i}">${i+1}</button>`).join("")}</div></div>`;
+  V.innerHTML=h;
+  V.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{E.ans[q.id]=+b.dataset.i;saveLocal();renderExam()});
+  V.querySelectorAll(".qgrid button").forEach(b=>b.onclick=()=>{E.idx=+b.dataset.j;saveLocal();renderExam()});
+  document.getElementById("prev").onclick=()=>{E.idx--;saveLocal();renderExam()};
+  document.getElementById("nxt").onclick=()=>{if(E.idx+1<E.ids.length){E.idx++;saveLocal();renderExam();window.scrollTo({top:0})}else finishExam()};
+  const fb=document.getElementById("fin"); let armed=false;
+  fb.onclick=()=>{const left=E.ids.length-Object.keys(E.ans).length; if(left&&!armed){armed=true;fb.textContent="Tap again to finish";document.getElementById("finh").textContent=left+" unanswered will count as wrong.";return} finishExam()};
+}
+function finishExam(){
+  const E=S.exam; E.done=true;
+  for(const id of E.ids){ const q=QBY[id]; const a=E.ans[id]; if(a===undefined) continue; const ok=a===q.a;
+    const r=S.recs[id]||{r:0,w:0,h:[],lb:0}; ok?r.r++:r.w++; r.h=r.h.concat(ok?1:0).slice(-8); r.lb=S.batch; S.recs[id]=r; pushRec(id); }
+  saveLocal(); renderExam(); window.scrollTo({top:0});
+}
+function renderExamResults(){
+  const E=S.exam; const right=E.ids.filter(id=>E.ans[id]===QBY[id].a).length;
+  let h=`<div class="card"><span class="eyebrow">Practice exam ${E.n} finished</span>${predLine()}<div class="sumgrid"><div><div class="big">${Math.round(right/E.ids.length*100)}%</div><div class="hint">${right} of ${E.ids.length} correct</div></div><div><b>By module</b><ul class="plain">`;
+  for(const m of MLIST){const ids=E.ids.filter(id=>TOPICS[QBY[id].t].m===m);const r=ids.filter(id=>E.ans[id]===QBY[id].a).length;
+    h+=`<li>HW ${m}: ${r}/${ids.length} ${chip(r/ids.length>=.8?"solid":r/ids.length>=.6?"shaky":"weak",r/ids.length>=.8?"Solid":r/ids.length>=.6?"Shaky":"Weak")}</li>`}
+  h+=`</ul></div></div><div class="qgrid">${E.ids.map((id,i)=>`<button class="${E.ans[id]===QBY[id].a?"ok":"no"}" data-j="${i}" aria-label="Question ${i+1}">${i+1}</button>`).join("")}</div>`;
+  const missed=E.ids.filter(id=>E.ans[id]!==QBY[id].a);
+  if(missed.length) h+=`<h2>What you missed</h2><div class="missed">${missed.map(id=>{const q=QBY[id];const a=E.ans[id];return `<div><b>${esc(q.q.split("\n")[0])}</b><span class="hint">${a===undefined?"Not answered":"You said "+L[a]+". "+esc(q.o[a])}. Answer: ${L[q.a]}. ${esc(q.o[q.a])}</span><p class="note">${esc(q.x)} <span class="src">${esc(q.ref)}</span></p>${slideBtns(q)}</div>`}).join("")}</div>`;
+  h+=`<div class="actions"><button class="btn" id="again">Take a new practice exam</button><button class="btn ghost" id="todrill">Drill my weak spots</button></div></div>`;
+  V.innerHTML=h;
+  document.getElementById("again").onclick=()=>{buildExam();renderExam()};
+  document.getElementById("todrill").onclick=()=>{view="drill";render()};
+}
+
+// ---------- learning objectives: 2 questions per objective, in order, like the Exam 1 LO quiz ----------
+let loMode="review"; try{loMode=localStorage.getItem(KEY+"-lomode")||"review"}catch(e){}
+const loOpen={};
+function loSwitch(){return `<div class="seg" role="group" aria-label="Learning objectives view"><button class="segb" data-m="review" aria-pressed="${loMode==="review"}">Objectives review</button><button class="segb" data-m="quiz" aria-pressed="${loMode==="quiz"}">Objective questions</button></div>`}
+function wireLoSwitch(){V.querySelectorAll(".segb").forEach(b=>b.onclick=()=>{loMode=b.dataset.m;try{localStorage.setItem(KEY+"-lomode",loMode)}catch(e){};renderLO()})}
+function renderLOReview(){
+  let h=loSwitch()+`<div class="card"><span class="eyebrow">Objectives review</span><p class="hint">Each module starts with its learning objectives slide. Try to answer each objective in your head, then open the answer and the slide it comes from.</p></div>`;
+  LOREV.forEach(mod=>{
+    h+=`<div class="card"><h2>Module ${mod.m}</h2><p class="hint">This is the learning objectives slide.</p>
+    <button class="loslide slidebtn" data-d="m${mod.m}" data-n="${mod.slide}" aria-label="Open Module ${mod.m} learning objectives slide"><img src="slides/m${mod.m}/${mod.slide}.jpg" alt="Module ${mod.m} learning objectives slide" loading="lazy"></button>`;
+    mod.items.forEach(([k,a,ref])=>{const open=!!loOpen[k];
+      h+=`<div class="lorev"><p class="obj"><b>LO ${k}</b> ${esc(LOS[k])}</p><button class="btn ghost loans" data-k="${k}" aria-expanded="${open}">${open?"Hide answer":"Show answer and slide"}</button>
+      ${open?`<div class="ans"><p>${esc(a)}</p><div class="ref">Source: ${esc(ref)}</div>${slideBtns({ref})}</div>`:""}</div>`});
+    h+=`</div>`});
+  V.innerHTML=h; wireLoSwitch();
+  V.querySelectorAll(".loans").forEach(b=>b.onclick=()=>{loOpen[b.dataset.k]=!loOpen[b.dataset.k];renderLO()});
+}
+function renderLO(){
+  if(loMode==="review") return renderLOReview();
+  const st=S.lo||(S.lo={idx:0,ans:{}}); if(st.idx>=LOQ.length) st.idx=0;
+  const q=LOQ[st.idx]; const given=st.ans[q.id]; const done=Object.keys(st.ans).filter(id=>QBY[id]).length;
+  const right=Object.keys(st.ans).filter(id=>QBY[id]&&st.ans[id]===QBY[id].a).length;
+  let h=loSwitch()+`<div class="batchbar"><span class="eyebrow">Learning objectives · Question ${st.idx+1} of ${LOQ.length}</span><span class="hint">${right}/${done} right so far</span></div>
+  <div class="card"><div class="qmeta"><span class="src">Module ${TOPICS[q.t].m} · LO ${q.lo}</span></div>
+  <p class="lotag">${esc(LOS[q.lo])}</p><p class="qtext">${esc(q.q)}</p><div class="opts" role="group" aria-label="Answer choices">`;
+  q.o.forEach((o,i)=>{let cls="";if(given!==undefined){if(i===q.a)cls="right";else if(i===given)cls="wrong"}
+    h+=`<button class="opt ${cls}" id="opt-${i}" data-i="${i}" ${given!==undefined?"disabled":""}><span class="L">${L[i]}</span><span>${esc(o)}</span></button>`});
+  h+=`</div>`;
+  if(given!==undefined){const ok=given===q.a;
+    h+=`<div class="fb ${ok?"":"no"}"><h3>${ok?"Correct":"Not quite. The answer is "+L[q.a]+"."}</h3><p>${esc(q.x)}</p><div class="ref">Source: ${esc(q.ref)}</div>${slideBtns(q)}</div>`}
+  h+=`<div class="actions"><button class="btn ghost" id="lprev" ${st.idx===0?"disabled":""}>Back</button><button class="btn" id="lnext">${st.idx+1<LOQ.length?"Next question":"Start over from LO 5.1"}</button></div>
+  <div class="qgrid" aria-label="Jump to question">${LOQ.map((x,i)=>`<button class="${st.ans[x.id]===undefined?"":st.ans[x.id]===x.a?"ok":"no"} ${i===st.idx?"cur":""}" data-j="${i}" aria-label="Question ${i+1}">${i+1}</button>`).join("")}</div></div>`;
+  V.innerHTML=h; wireLoSwitch();
+  V.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ if(st.ans[q.id]!==undefined) return; const i=+b.dataset.i; st.ans[q.id]=i; const ok=i===q.a;
+    const r=S.recs[q.id]||{r:0,w:0,h:[],lb:0}; ok?r.r++:r.w++; r.h=r.h.concat(ok?1:0).slice(-8); r.lb=S.batch; S.recs[q.id]=r; saveLocal(); pushRec(q.id); renderLO()});
+  V.querySelectorAll(".qgrid button").forEach(b=>b.onclick=()=>{st.idx=+b.dataset.j;saveLocal();renderLO()});
+  document.getElementById("lprev").onclick=()=>{st.idx--;saveLocal();renderLO();window.scrollTo({top:0})};
+  document.getElementById("lnext").onclick=()=>{ if(st.idx+1<LOQ.length) st.idx++; else S.lo={idx:0,ans:{}}; saveLocal();renderLO();window.scrollTo({top:0})};
+}
+
+function renderDrill(){
+  if(!S.cur||S.cur.ids.length===0){ return renderStart() }
+  const c=S.cur; if(c.idx>=c.ids.length) return renderSummary();
+  const q=QBY[c.ids[c.idx]]; const st=topicStats(q.t); const given=c.ans[q.id];
+  const pips=c.ids.map((id,i)=>{const a=c.ans[id];return `<span class="pip ${a===undefined?(i===c.idx?"cur":""):(a===QBY[id].a?"ok":"no")}"></span>`}).join("");
+  let h=`<div class="batchbar"><span class="eyebrow">Batch ${c.n} · Question ${c.idx+1} of ${c.ids.length}</span><div class="pips" aria-hidden="true">${pips}</div></div>
+  <div class="card"><div class="qmeta">${chip(st.status,TOPICS[q.t].n)}<span class="src">${q.src==="New"?"HW "+TOPICS[q.t].m+" topic · New":esc(q.src)}</span></div>
+  ${q.lo?`<p class="lotag">LO ${q.lo} · ${esc(LOS[q.lo])}</p>`:""}<p class="qtext">${esc(q.q)}</p><div class="opts" role="group" aria-label="Answer choices">`;
+  q.o.forEach((o,i)=>{let cls="";if(given!==undefined){if(i===q.a)cls="right";else if(i===given)cls="wrong"}
+    h+=`<button class="opt ${cls}" id="opt-${i}" data-i="${i}" ${given!==undefined?"disabled":""}><span class="L">${L[i]}</span><span>${esc(o)}</span></button>`});
+  h+=`</div>`;
+  if(given!==undefined){const ok=given===q.a;
+    h+=`<div class="fb ${ok?"":"no"}"><h3>${ok?"Correct":"Not quite. The answer is "+L[q.a]+"."}</h3><p>${esc(q.x)}</p><div class="ref">Source: ${esc(q.ref)}</div>${slideBtns(q)}</div>
+    <div class="actions"><button class="btn" id="next">${c.idx+1<c.ids.length?"Next question":"See batch results"}</button><span class="hint">Enter for next</span></div>`;
+  }else h+=`<div class="actions"><span class="hint">Tap an answer, or press A to ${L[q.o.length-1]}.</span></div>`;
+  V.innerHTML=h+`</div>`;
+  V.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(+b.dataset.i));
+  const n=document.getElementById("next"); if(n){n.onclick=next;n.focus({preventScroll:true})}
+}
+function answer(i){
+  const c=S.cur; const q=QBY[c.ids[c.idx]]; if(c.ans[q.id]!==undefined) return;
+  c.ans[q.id]=i; const ok=i===q.a;
+  const r=S.recs[q.id]||{r:0,w:0,h:[],lb:0}; ok?r.r++:r.w++; r.h=r.h.concat(ok?1:0).slice(-8); r.lb=c.n; S.recs[q.id]=r;
+  saveLocal(); pushRec(q.id); renderDrill();
+}
+function next(){S.cur.idx++;saveLocal();renderDrill();window.scrollTo({top:0})}
+
+function renderStart(){
+  const seen=Object.keys(S.recs).length;
+  V.innerHTML=`<div class="card"><span class="eyebrow">${seen?"Ready for batch "+(S.batch+1):"Start here"}</span>
+  <h2 style="margin-top:6px">${seen?"Next batch, weighted to your weak spots":"First batch: a quick diagnostic"}</h2>
+  <p>${seen?"The next 10 questions are picked mostly from the topics you are missing, plus questions you got wrong that come back until you get them right twice. One question checks a topic you already know so it stays fresh.":"10 questions across all five homeworks, so the drill can see where you stand. After that, every batch is weighted toward what you miss."}</p>
+  <p class="hint">${Q.length} questions: 62 from Isabelle’s Homeworks 7, 8a, 8b, 9 and 10 with Canvas’s answers, plus new questions on every topic from the exam list.</p>
+  <div class="actions"><button class="btn" id="go">Start batch ${S.batch+1}</button></div></div>`;
+  document.getElementById("go").onclick=()=>{buildBatch();renderDrill()};
+}
+function renderSummary(){
+  const c=S.cur; const ids=c.ids; const right=ids.filter(id=>c.ans[id]===QBY[id].a).length;
+  const missed=ids.filter(id=>c.ans[id]!==QBY[id].a);
+  const ts=Object.fromEntries(Object.keys(TOPICS).map(t=>[t,topicStats(t)]));
+  const weakest=Object.keys(TOPICS).filter(t=>ts[t].status!=="new").sort((a,b)=>ts[a].m-ts[b].m).slice(0,4).filter(t=>ts[t].status!=="solid");
+  const unseen=Object.keys(TOPICS).filter(t=>ts[t].status==="new").length;
+  const touched=[...new Set(ids.map(id=>QBY[id].t))];
+  let h=`<div class="card"><span class="eyebrow">Batch ${c.n} done</span>${predLine()}
+  <div class="sumgrid"><div><div class="big">${right}/${ids.length}</div><div class="hint">correct this batch</div></div>
+  <div><b>Next batch will focus on</b><ul class="plain">${weakest.length?weakest.map(t=>`<li>${esc(TOPICS[t].n)} ${chip(ts[t].status)}</li>`).join(""):"<li>Nothing weak right now. It will mix in topics you have not seen.</li>"}${unseen?`<li class="hint">${unseen} topics not tried yet</li>`:""}</ul></div></div>`;
+  h+=`<h2>Topics in this batch</h2>`+touched.map(t=>{const b=c.before[t],a=ts[t].m;const d=Math.round((a-b)*100);return `<div class="trow"><div class="nm">${esc(TOPICS[t].n)} ${chip(ts[t].status)}</div><div class="bar"><i class="${ts[t].status}" style="width:${Math.round(a*100)}%"></i></div><div class="tnum">${d>0?"+":""}${d}</div></div>`}).join("");
+  if(missed.length) h+=`<h2>What you missed</h2><div class="missed">${missed.map(id=>{const q=QBY[id];return `<div><b>${esc(q.q.split("\n")[0])}</b><span class="hint">Answer: ${L[q.a]}. ${esc(q.o[q.a])} · ${esc(q.ref)}</span>${slideBtns(q)}</div>`}).join("")}</div><p class="hint">These come back in later batches until you get each one right twice in a row.</p>`;
+  h+=`<div class="actions"><button class="btn" id="go">Start batch ${S.batch+1}</button><button class="btn ghost" id="pg">See all progress</button></div></div>`;
+  V.innerHTML=h;
+  document.getElementById("go").onclick=()=>{S.lastBatch=c.ids.slice();buildBatch();renderDrill();window.scrollTo({top:0})};
+  document.getElementById("pg").onclick=()=>{view="progress";render()};
+}
+function renderProgress(){
+  const ts=Object.fromEntries(Object.keys(TOPICS).map(t=>[t,topicStats(t)]));
+  const tot=Object.values(S.recs).reduce((a,r)=>a+r.r+r.w,0), rt=Object.values(S.recs).reduce((a,r)=>a+r.r,0);
+  const counts={weak:0,shaky:0,solid:0,new:0}; Object.values(ts).forEach(s=>counts[s.status]++);
+  let h=predCard()+`<div class="sumgrid"><div><div class="big">${tot?Math.round(rt/tot*100):0}%</div><div class="hint">${rt} of ${tot} answers correct · ${S.batch} batches</div></div>
+  <div>${chip("weak")} ${counts.weak} &nbsp;${chip("shaky")} ${counts.shaky} &nbsp;${chip("solid")} ${counts.solid} &nbsp;${chip("new")} ${counts.new}<p class="hint">Mastery weighs your last few tries on each question most, so old mistakes fade once you fix them.</p><p class="hint">${Q.filter(q=>retired(q.id)).length} of ${Q.length} questions retired (right ${RETIRE} times in a row), so drills skip them. Miss one in a practice exam and it comes back.</p></div></div>`;
+  for(const m of MLIST){
+    h+=`<h3 class="mod">${MODS[m]}</h3>`;
+    Object.keys(TOPICS).filter(t=>TOPICS[t].m===m).forEach(t=>{const s=ts[t];
+      h+=`<div class="trow"><div class="nm">${esc(TOPICS[t].n)} ${chip(s.status)}</div><div class="bar"><i class="${s.status}" style="width:${s.status==="new"?0:Math.round(s.m*100)}%"></i></div><div class="tnum">${s.att?s.right+"/"+s.att:"–"}</div></div>`});
+  }
+  h+=`<div class="actions" style="margin-top:28px"><button class="btn danger" id="reset">Reset all progress</button><span class="hint" id="rsh"></span></div>`;
+  V.innerHTML=h;
+  const rb=document.getElementById("reset"); let armed=false;
+  rb.onclick=async()=>{ if(!armed){armed=true;rb.textContent="Tap again to erase everything";document.getElementById("rsh").textContent="This clears every answer saved under your name.";return}
+    const ids=Object.keys(S.recs); S=fresh(); saveLocal();
+    render(); };
+}
+function renderGuide(){
+  const ts=Object.fromEntries(Object.keys(TOPICS).map(t=>[t,topicStats(t)]));
+  const weak=Object.keys(TOPICS).filter(t=>ts[t].status==="weak"||ts[t].status==="shaky");
+  let h=`<div class="guide"><div class="callout"><b>Exam topics (from the list Isabelle got).</b> Production: marginal product, diminishing returns. Costs: explicit vs implicit, TC = FC + VC, VC = L × wage, MC = ΔTC/Δq, AVC, AFC, ATC = AVC + AFC, LRATC and economies of scale, why sunk costs don’t matter. Profit: accounting vs economic, TR = p × q. Perfect competition: assumptions, MR = MC, the two-graph model, shutdown rule, long-run entry/exit in constant, increasing and decreasing cost industries, efficiency. Monopoly: why it happens, MR vs demand, profit on a graph, deadweight loss, 1st/2nd/3rd degree price discrimination, MC pricing vs ATC pricing vs antitrust. Monopolistic competition and oligopoly: profit on a graph, long-run profit, efficiency, collude or compete. <br><br><b>Exam 1 material is also on the exam</b> and isn’t in this drill yet. <br><br><b>Formulas:</b> Profit = (P − ATC) × Q. Shut down if P &lt; min AVC. Monopoly: Q where MR = MC, price from the demand curve. ${weak.length?`<br><br><b>Your weak spots right now:</b> ${weak.map(t=>esc(TOPICS[t].n)).join(", ")}.`:""}</div>`;
+  for(const m of MLIST){
+    h+=`<section><h3 class="mod">${MODS[m]}</h3>`;
+    Object.keys(TOPICS).filter(t=>TOPICS[t].m===m).forEach(t=>{
+      h+=`<h4>${esc(TOPICS[t].n)} ${chip(ts[t].status)}</h4><ul class="plain">${TOPICS[t].g.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`});
+    h+=`</section>`;
+  }
+  V.innerHTML=h+`</div>`;
+}
+// Slide viewer: refs like "M6 slide 23", "M8 slides 11, 19", "M9 slides 21-22"; review questions also link their review-deck slide (Q N = slide N+1).
+const DECKS={m5:41,m6:24,m7:23,m8:29,m9:30,rv:49};
+function slidesFor(q){
+  const out=[]; const add=(d,n)=>{if(n>=1&&n<=DECKS[d]&&!out.some(s=>s.d===d&&s.n===n))out.push({d,n})};
+  for(const m of (q.ref||"").matchAll(/M([5-9])\s+slides?\s+([\d][\d,\s\-–]*)/g))
+    for(const part of m[2].split(",")){const [a,b]=part.trim().split(/[-–]/).map(Number); if(a) for(let n=a;n<=(b||a);n++) add("m"+m[1],n)}
+  const rq=/^Review Q(\d+)/.exec(q.src||""); if(rq) add("rv",+rq[1]+1);
+  return out;
+}
+const slideName=s=>s.d==="rv"?"Review deck · Q"+(s.n-1):"Module "+s.d.slice(1)+" · slide "+s.n;
+function slideBtns(q){const ss=slidesFor(q); if(!ss.length) return "";
+  return `<div class="slides">${ss.map(s=>`<button class="slidebtn" data-d="${s.d}" data-n="${s.n}">▶ ${s.d==="rv"?"Review Q"+(s.n-1)+" slide":"M"+s.d.slice(1)+" slide "+s.n}</button>`).join("")}</div>`}
+const SV=document.getElementById("sv"); let svCur=null;
+function showSlide(d,n){ n=Math.max(1,Math.min(DECKS[d],n)); svCur={d,n}; const src=`slides/${d}/${n}.jpg`;
+  const img=document.getElementById("sv-img"); img.src=src; img.alt=slideName(svCur);
+  document.getElementById("sv-t").textContent=slideName(svCur); document.getElementById("sv-open").href=src;
+  document.getElementById("sv-prev").disabled=n<=1; document.getElementById("sv-next").disabled=n>=DECKS[d];
+  if(!SV.open) SV.showModal(); }
+document.addEventListener("click",e=>{const b=e.target.closest(".slidebtn"); if(b){e.preventDefault();showSlide(b.dataset.d,+b.dataset.n)}});
+document.getElementById("sv-x").onclick=()=>SV.close();
+document.getElementById("sv-prev").onclick=()=>showSlide(svCur.d,svCur.n-1);
+document.getElementById("sv-next").onclick=()=>showSlide(svCur.d,svCur.n+1);
+SV.addEventListener("click",e=>{if(e.target===SV)SV.close()});
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{view=b.dataset.v;try{localStorage.setItem(KEY+"-view",view)}catch(e){};render()});
+try{const v=localStorage.getItem(KEY+"-view");if(v&&["drill","exam","progress","guide"].includes(v))view=v}catch(e){}
+document.addEventListener("keydown",e=>{
+  if(ND.open) return;
+  if(SV.open){if(e.key==="ArrowLeft"){e.preventDefault();showSlide(svCur.d,svCur.n-1)}else if(e.key==="ArrowRight"){e.preventDefault();showSlide(svCur.d,svCur.n+1)}return}
+  if(document.activeElement?.classList.contains("slidebtn")) return;
+  if(view==="exam"&&S.exam&&!S.exam.done&&!e.metaKey&&!e.ctrlKey&&!e.altKey){const q=QBY[S.exam.ids[S.exam.idx]];const i=L.indexOf(e.key.toUpperCase());if(i>=0&&i<q.o.length){e.preventDefault();S.exam.ans[q.id]=i;saveLocal();renderExam()}return}
+  if(view!=="drill"||!S.cur||S.cur.idx>=S.cur.ids.length||e.metaKey||e.ctrlKey||e.altKey) return;
+  const q=QBY[S.cur.ids[S.cur.idx]]; const k=e.key.toUpperCase();
+  if(S.cur.ans[q.id]===undefined){const i=L.indexOf(k); if(i>=0&&i<q.o.length){e.preventDefault();answer(i)}}
+  else if(e.key==="Enter"&&document.activeElement?.id!=="next"){e.preventDefault();next()}
+});
+askName();
+</script>
+</body></html>
